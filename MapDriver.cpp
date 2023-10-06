@@ -1,4 +1,4 @@
-// Comp345Assignment1.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//Written by Kiran Freund, ID: 40195543
 //
 #include "mapdriver.h"
 #include "Map.h"
