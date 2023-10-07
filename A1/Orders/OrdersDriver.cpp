@@ -33,10 +33,5 @@ void testOrdersLists() {
     ordersList.orderList.clear();
 }
 
-int main() {
-    testOrdersLists();
-    return 0;
-}
-
 
 
