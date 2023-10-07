@@ -10,13 +10,13 @@ int main() {
   cout << "Map: " << endl;
   testLoadMaps();
   cout << "Player: " << endl;
-	testPlayers();
+  testPlayers();
   cout << "Order: " << endl;
   testOrdersLists();
   cout << "Card: " << endl;
   testCards();
   cout << "Game engine: " << endl;
   testGameStates();
-	return 0;
+  return 0;
 
 }
