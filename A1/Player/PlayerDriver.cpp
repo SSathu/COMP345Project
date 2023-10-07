@@ -40,3 +40,8 @@ void testPlayers() {
     cout << "Information of second player: " << endl;
     cout << player2;
 }
+
+int main(){
+testPlayers();
+return 0;
+}
