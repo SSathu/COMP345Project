@@ -1,3 +1,6 @@
+// Name: Quang Kien Bui
+// ID: 40204011
+
 #include "Player.h"
 #include <iostream>
 
