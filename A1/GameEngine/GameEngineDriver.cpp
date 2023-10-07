@@ -26,8 +26,4 @@ void testGameStates() {
     }
 }
 
-int main() {
-    testGameStates();
-    return 0;
-}
 
