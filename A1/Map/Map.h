@@ -7,21 +7,10 @@
 #include <map>
 #include <iostream>
 #include <fstream>
-class Map
-{
-	public:
-		Map();
-		Map(Map* copy);
-		vector<Territory*>* territories;
-		bool validate();
-		bool isConnected();
-		void streamInsertion();
-};
-class MapLoader
-{
-	public:
-		bool createMapFromFile(string& fileName, Map* map2make);
-};
+
+using namespace std;
+
+
 class Territory
 {
 	private:
@@ -49,5 +38,22 @@ class Territory
 		void addNeighbor(Territory* neighbor);
 		void deleteVariables();
 		void streamInsertion();
+};
+
+class Map
+{
+public:
+    Map();
+    Map(Map* copy);
+    vector<Territory*>* territories;
+    bool validate();
+    bool isConnected();
+    void streamInsertion();
+};
+
+class MapLoader
+{
+public:
+    bool createMapFromFile(string& fileName, Map* map2make);
 };
 

@@ -6,6 +6,11 @@
 
 using namespace std;
 
+int main(){
+    MapDriver::testLoadMaps();
+    return 0;
+}
+
 void MapDriver::testLoadMaps() {
 	MapLoader mapDriver = MapLoader();
 

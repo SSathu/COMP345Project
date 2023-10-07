@@ -17,8 +17,8 @@ Territory::Territory(string name, string cont, int x, int y) {
 	neighbors = new vector<Territory*>;
 }
 Territory::Territory(Territory* copy) {
-	playerOwner = (copy->getName());
-	continent = &(copy->getContinent());
+	playerOwner = new std::string(copy->getName());
+	continent = new std::string(copy->getContinent());
 	int xx = copy->getXCoord();
 	xCoord = &xx;
 	int yy = copy->getYCoord();

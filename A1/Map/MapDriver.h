@@ -5,8 +5,9 @@
 
 class MapDriver
 {
-	void testLoadMaps();
-	//Remember, this method is to verify if code works by passing in random text files (just download some)
+    //Remember, this method is to verify if code works by passing in random text files (just download some)
+public:
+    static void testLoadMaps();
 };
 
 #endif //MAPDRIVER_H
