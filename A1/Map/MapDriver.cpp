@@ -9,9 +9,9 @@ using namespace std;
 void MapDriver::testLoadMaps() {
 	MapLoader mapDriver = MapLoader();
 
-	string mapFile1 = "../MapFiles/Texas";
-	string mapFile2 = "../MapFiles/Skyland";
-	string mapFile3 = "../MapFiles/Roman_Empire";
+	string mapFile1 = "MapFiles/Texas";
+	string mapFile2 = "MapFiles/Skyland";
+	string mapFile3 = "MapFiles/Roman_Empire";
 
 	Map* mapTest1;
 	bool test1 = mapDriver.createMapFromFile(mapFile1, mapTest1);
