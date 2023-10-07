@@ -17,4 +17,7 @@ add_executable(a1_335_p5
 #        Cards/Cards.cpp
 #        Cards/Cards.h
 #        Cards/CardDriver.cpp
+#Player/Player.h
+#Player/Player.cpp
+#Player/PlayerDriver.cpp
 )
