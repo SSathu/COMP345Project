@@ -179,7 +179,7 @@ bool MapLoader::createMapFromFile(string& fileName, Map* map2make) {
 	}
 	//If the first line of the file isnt "[Map]", reject file
 	string nextLine;
-	if (getline(inputFileStream, nextLine) || nextLine != "[Map]") {
+	if (!getline(inputFileStream, nextLine) || nextLine != "[Map]") {
 		inputFileStream.close();
 		return false;
 	}
