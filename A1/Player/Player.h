@@ -1,3 +1,6 @@
+// Name: Quang Kien Bui
+// ID: 40204011
+
 #ifndef PLAYER_H
 #define PLAYER_H
 
