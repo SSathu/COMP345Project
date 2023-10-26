@@ -36,15 +36,15 @@ class Territory
 		std::string getName() const;
 		std::string getContinent() const;
 		void addNeighbor(Territory* neighbor);
-		void deleteVariables();
 		void streamInsertion();
+        ~Territory();
 };
 
 class Map
 {
 public:
     Map();
-    Map(Map* copy);
+    Map(const Map& copy);
     vector<Territory*>* territories;
     bool validate();
     bool isConnected();
@@ -56,4 +56,5 @@ class MapLoader
 public:
     bool createMapFromFile(string& fileName, Map* map2make);
 };
+
 
