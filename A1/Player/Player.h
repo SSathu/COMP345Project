@@ -25,7 +25,7 @@ class Player {
 public:
 	// Constuctors and Destructor
 	Player();
-	Player(string name, vector<string> territory, vector<string> card, vector<PlayerOrder*> orderList);
+	Player(string name, std::vector<Territory*>* territory, vector<string> card, vector<PlayerOrder*> orderList);
 	Player(Player &player);
 	~Player();
 
@@ -41,15 +41,17 @@ public:
 	void issueOrder(string order);
 	
 	
-private:
+public:
 	// Store name of a player
 	string name;
 	// Store territories
-	vector<string> territory;
+	std::vector<Territory*>* territory;
 	// Store cards
 	vector<string> card;
 	// Store a list of orders
 	vector<PlayerOrder*> orderList;
+	static Player* NeutralPlayer;
+	std::vector<Player*>* negotiating;
 };
 
 

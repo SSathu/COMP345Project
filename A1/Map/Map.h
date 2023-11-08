@@ -13,13 +13,15 @@ using namespace std;
 
 class Territory
 {
-	private:
-		string* playerOwner;
+
+	public:
+		Player* playerOwner;
 		string* territoryName;
 		string* continent;
 		int* xCoord;
 		int* yCoord;
-	public:
+
+
 		Territory(string name, string cont, int x, int y);
 		Territory(Territory* copy);
 

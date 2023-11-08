@@ -3,6 +3,7 @@
 
 #include "Player.h"
 #include <iostream>
+#include "../Map/Map.h"
 
 // Constructor
 PlayerOrder::PlayerOrder(string playerOrder) {
@@ -23,7 +24,7 @@ string PlayerOrder::getOrder() {
 	}
 
 	// Parameterized constructor
-	Player::Player(string  name, vector<string>territory, vector<string>card, vector<PlayerOrder*> orderList) {
+	Player::Player(string  name, std::vector<Territory*>* territory, vector<string>card, vector<PlayerOrder*> orderList) {
 		this->name = name;
 		this->territory = territory;
 		this->card = card;
@@ -41,7 +42,7 @@ string PlayerOrder::getOrder() {
 	// Destructor
 	Player::~Player() {
 		name.clear();
-		territory.clear();
+		territory->clear();
 		card.clear();
 	for (PlayerOrder* order : orderList) {
 				delete order;
@@ -72,8 +73,8 @@ string PlayerOrder::getOrder() {
 	ostream& operator << (ostream& os, Player& player) {
 		os << "Name: " << player.name << endl;
 		os << "Territories: " << endl;
-		for (string& s1 : player.territory) {
-			os << "-" << s1 << endl;
+		for (Territory* s1 : *(player.territory)) {
+			os << "-" << s1->getName() << endl;
 		}
 		os << endl;
 		os << "Cards: " << endl;
@@ -91,8 +92,8 @@ string PlayerOrder::getOrder() {
 	// The method shows a list of territories to be defended
 	void Player::toDefend() {
 		cout << "Territories to be defended: " << endl;
-		for (string& s : territory) {
-				cout << s << endl;
+		for (Territory* s : *territory) {
+				cout << s->getName() << endl;
 		}
 		cout << endl;
 
@@ -101,8 +102,8 @@ string PlayerOrder::getOrder() {
 	// the method shows a list of territories to be attacked
 	void Player::toAttack() {
 		cout << "Territories to be attacked: " << endl;
-		for (string& s : territory) {
-				cout << s << endl;
+		for (Territory* s : *territory) {
+				cout << s->getName() << endl;
 	
 		}
 		cout << endl;

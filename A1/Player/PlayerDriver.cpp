@@ -3,11 +3,12 @@
 
 #include "Player.h"
 #include <iostream>
+#include "../Map/Map.h"
 
 void testPlayers() {
     // Create variables to store name, territories, cards and orders
-    vector<string> territory = { "West Europe", "South Europe"};
-    vector<string> territory2 = { "Great Britain", "North Europe" };
+    vector<Territory*>* territory = {};
+    vector<Territory*>* territory2 = {};
     vector<string> card = { "Order Priority", "Order Priority" };
     vector<PlayerOrder*> orderList = {};
 
