@@ -33,8 +33,8 @@ class Territory
 		int getYCoord() const;
 		void setXCoord(int* newX);
 		void setYCoord(int* newY);
-		std::string getPlayer() const;
-		void setPlayer(string* newName);
+		Player& getPlayer() const;
+		void setPlayer(Player* newName);
 		std::string getName() const;
 		std::string getContinent() const;
 		void addNeighbor(Territory* neighbor);

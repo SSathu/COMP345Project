@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include "Map.h"
+#include "../Player/Player.h"
 
 using namespace std;
 
@@ -17,7 +18,7 @@ Territory::Territory(string name, string cont, int x, int y) {
 }
 Territory::Territory(Territory* copy) {
     territoryName = new std::string(copy->getName());
-    playerOwner = new std::string(copy->getPlayer());
+    playerOwner = new Player(copy->getPlayer());
 	continent = new std::string(copy->getContinent());
 	xCoord = new int(copy->getXCoord());
 	yCoord = new int(copy->getYCoord());
@@ -41,12 +42,12 @@ void Territory::setYCoord(int* newY) {
 	delete yCoord;
 	yCoord = newY;
 }
-string Territory::getPlayer() const {
+Player& Territory::getPlayer() const {
 	return *playerOwner;
 }
-void Territory::setPlayer(string* newName) {
+void Territory::setPlayer(Player* newPlayer) {
 	delete playerOwner;
-	playerOwner = newName;
+	playerOwner = newPlayer;
 }
 string Territory::getName() const {
     return *territoryName;
