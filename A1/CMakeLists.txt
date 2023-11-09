@@ -25,4 +25,6 @@ add_executable(a1_335_p5#
     Player/Player.cpp
 
     MainDriver.cpp
+        Command/CommandProcessing.cpp
+        Command/CommandProcessing.h
 )

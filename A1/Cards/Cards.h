@@ -1,13 +1,12 @@
 #pragma once
 #include <string>
-#include <string>
 #include "../Orders/Orders.h"
 #include <iostream>
 #include <vector>
 #include <algorithm> //Sorting, find, etc
-#include <stdlib.h> //for random numbers
+#include <cstdlib> //for random numbers
 #include <iterator> 
-#include <time.h> //Part of generating seed
+#include <ctime> //Part of generating seed
 
 
 //bomb, reinforcement, blockade, airlift and diplomacy are the types of Cards
