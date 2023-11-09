@@ -18,7 +18,7 @@ string PlayerOrder::getOrder() {
 // Default constructor
 	Player::Player(){
 		name = "";
-		territory = {};
+		territory = new vector<Territory*>;
 		card = {};
 		orderList = {};
 	}
@@ -115,5 +115,12 @@ string PlayerOrder::getOrder() {
 		PlayerOrder* playerOrder = new PlayerOrder(order);
 		orderList.push_back(playerOrder);
 	}
+
+void Player::setName(std::string newName) {
+        this->name = newName;
+    }
+    string Player::getName() {
+        return name;
+    }
 
 
