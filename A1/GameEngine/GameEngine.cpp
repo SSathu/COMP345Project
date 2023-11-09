@@ -70,3 +70,117 @@ std::ostream &operator<<(std::ostream &os, const GameEngine &engine) {
     return os;
 }
 
+//Startup Phase
+void GameEngine::startupPhase(std::string loadmapOrAddplayer, std::string playernameOrFilename) {
+    //If the command is loadmap
+    if (loadmapOrAddplayer == "loadmap"){
+        MapLoader mapDriver = MapLoader();
+        gameEngineMap = new Map();
+        bool loaded = mapDriver.createMapFromFile(playernameOrFilename, gameEngineMap);
+        if (loaded) {
+            cout << "Successful creation of a map from " << playernameOrFilename << endl;
+            processInput("loadmap");
+        }
+        else {
+            cout << "Unsuccessful creation of a map from " << playernameOrFilename << endl;
+        }
+    }
+
+    //Else, the command must be addplayer
+    else {
+        Player* tempPlayer = new Player();
+        tempPlayer->setName(playernameOrFilename);
+        players.push_back(tempPlayer);
+        cout << "New list of players:" << endl;
+        for (int i = 0; i < players.size(); ++i) {
+            cout << " - " << players[i]->getName() << endl;
+        }
+        processInput("addplayer");
+    }
+}
+void GameEngine::startupPhase(std::string validateOrGamestart) {
+    //If the command is validatemap
+    if (validateOrGamestart == "validatemap") {
+        //Simply reuse the code from MapDriver
+        if (gameEngineMap->validate()) {
+            cout << "Map is valid!" << endl;
+            processInput("validatemap");
+        }
+        else {
+            cout << "Map is invalid!" << endl;
+        }
+    }
+
+    //Else, the command must be gamestart
+    else {
+        // 1) distribute all territories to all players
+        for (int i = 0; i < gameEngineMap->territories->size() - (gameEngineMap->territories->size() % players.size()); ++i) {
+            players[(i / (gameEngineMap->territories->size() / players.size()))]->territory->push_back(gameEngineMap->territories->at(i));
+        }
+        for (int i = 0; i < (gameEngineMap->territories->size() % players.size()); ++i) {
+            players[i]->territory->push_back(gameEngineMap->territories->at((gameEngineMap->territories->size() - (gameEngineMap->territories->size() % players.size())) + i));
+        }
+        processInput("assigncountries");
+        cout << endl;
+
+        // 2) randomly determine order of players
+        cout << "New order of player turns:" << endl;
+        std::random_shuffle(players.begin(), players.end());
+        for (int i = 0; i < players.size(); ++i) {
+            cout << " - " << players[i]->getName() << endl;
+        }
+        cout << endl;
+
+        // 3) give 50 armies to each as reinforcements
+        for (int i = 0; i < players.size(); ++i) {
+            players[i]->reinforcementArmies = 50;
+        }
+
+        // 4) have each player draw() 2 cards
+        cout << "Instantiating deck..." << endl;
+        Card* card5 = new Card(5);
+        Card* card2 = new Card(2);
+        Card* card1 = new Card(1);
+        Card* card3 = new Card(3);
+        Card* card4 = new Card(4);
+        Card* card05 = new Card(5);
+        Card* card02 = new Card(2);
+        Card* card01 = new Card(1);
+        Card* card03 = new Card(3);
+        Card* card04 = new Card(4);
+        Card* card003 = new Card(3);
+        Card* card004 = new Card(4);
+
+        Deck* deck = new Deck();
+
+        deck->insertCard(card1);
+        deck->insertCard(card2);
+        deck->insertCard(card3);
+        deck->insertCard(card4);
+        deck->insertCard(card5);
+        deck->insertCard(card01);
+        deck->insertCard(card02);
+        deck->insertCard(card03);
+        deck->insertCard(card04);
+        deck->insertCard(card05);
+        deck->insertCard(card003);
+        deck->insertCard(card004);
+        cout << "Deck complete! Cards in deck:" << endl;
+        cout << *deck;
+        cout << endl;
+
+        for (int i = 0; i < players.size(); ++i) {
+            cout << "Player " << i + 1 << " drawing..." << endl;
+            players[i]->hand = new Hand();
+            deck->draw(players[i]->hand);
+            deck->draw(players[i]->hand);
+            cout << "Cards in " << players[i]->getName() << "'s Hand: \n" ;
+            cout << *players[i]->hand;
+        }
+        cout << endl;
+
+        // 5) switch game state to "Play"
+        cout << "Now in play phase!" << endl;
+    }
+}
+
