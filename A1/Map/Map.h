@@ -7,9 +7,11 @@
 #include <map>
 #include <iostream>
 #include <fstream>
+#include "../Player/Player.h"
 
 using namespace std;
 
+class Player;
 
 class Territory
 {
