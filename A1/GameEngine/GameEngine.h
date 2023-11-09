@@ -4,6 +4,8 @@
 
 #include <map>
 #include <string>
+#include "../Map/Map.h"
+#include "../Player/Player.h"
 
 enum State {
     start,
@@ -41,6 +43,11 @@ class GameEngine {
         State* getCurrentState();
         static std::string stateToString(State state);
         friend std::ostream& operator<<(std::ostream& os, const GameEngine& engine); // Stream insertion operator
+
+        void startupPhase(std::string validateOrGamestart);
+        void startupPhase(std::string loadmapOrAddplayer, std::string playernameOrFilename);
+        Map* gameEngineMap;
+        vector<Player*> players;
     private:
         // Instance variable holding the game's current state
         State* currentState;
