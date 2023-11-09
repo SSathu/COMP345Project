@@ -6,6 +6,8 @@
 
 #include <iostream>
 #include <vector>
+#include "../Map/Map.h"
+#include "../Cards/Cards.h"
 using namespace std;
 
 
@@ -21,6 +23,7 @@ private:
 	string playerOrder;
 };
 
+class Territory;
 class Player {
 public:
 	// Constuctors and Destructor
@@ -40,7 +43,10 @@ public:
 	// Put orders in a list
 	void issueOrder(string order);
 	
-	
+	string getName();
+        void setName(string newName);
+        Hand* hand;
+        int reinforcementArmies;
 public:
 	// Store name of a player
 	string name;
