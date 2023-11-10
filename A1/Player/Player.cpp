@@ -1,5 +1,3 @@
-// Name: Quang Kien Bui
-// ID: 40204011
 
 #include "Player.h"
 #include <iostream>
@@ -15,12 +13,18 @@ string PlayerOrder::getOrder() {
 	return playerOrder;
 }
 
+void PlayerOrder::execute() {
+	// Update game state based on the order
+	cout << "Executing order: " << playerOrder;
+}
+
 // Default constructor
 	Player::Player(){
 		name = "";
 		territory = new vector<Territory*>;
 		card = {};
 		orderList = {};
+		reinforcementPool = 0;
 	}
 
 	// Parameterized constructor
@@ -111,9 +115,43 @@ string PlayerOrder::getOrder() {
 	}
 
 	// The method puts the orders into a list of orders
-	void Player::issueOrder(string order) {
-		PlayerOrder* playerOrder = new PlayerOrder(order);
-		orderList.push_back(playerOrder);
+	void Player::issueOrder() {
+		// to defend
+		toDefend();
+		cout << "Issuing deploy orders:" << endl;
+		for (Territory* t : *territory) {
+			if (reinforcementPool > 0) {
+				cout << "Deploying units to " << t->getName() << endl;
+				orderList.push_back(new PlayerOrder("Deploy to " + t->getName()));
+				reinforcementPool--;
+			}
+		}
+		cout << endl; 
+	
+		// to attack
+		if (reinforcementPool == 0) {
+			toAttack();
+			cout << "Issuing advance orders:" << endl;
+			for (Territory* t : *territory) {
+
+				if (reinforcementPool > 0) {
+					cout << "Moving units to defend " << t->getName() << endl;
+					orderList.push_back(new PlayerOrder("Defend " + t->getName()));
+					reinforcementPool--;
+				}
+			}
+			cout << endl;
+
+			if (!card.empty()) {
+				cout << "Using card: " << card.back() << endl;
+				orderList.push_back(new PlayerOrder(card.back()));
+				//  remove the used card from the hand
+				card.pop_back(); 
+			}
+			cout << endl;
+
+		}
+	
 	}
 
 void Player::setName(std::string newName) {
@@ -123,4 +161,20 @@ void Player::setName(std::string newName) {
         return name;
     }
 
+	int Player::getReinforcementPool() {
+		return reinforcementPool;
+	}
+	void Player::setReinforcementPool(int reinforcementPool) {
+		this->reinforcementPool = reinforcementPool;
+	}
 
+	void Player::executeTopOrder() {
+		if (orderList.empty()) {
+			PlayerOrder* topOrder = orderList.front();
+			topOrder->execute();
+
+			// Clean up the executed order
+			delete topOrder;
+			orderList.erase(orderList.begin());
+		}
+	}

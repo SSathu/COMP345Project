@@ -1,5 +1,3 @@
-// Name: Quang Kien Bui
-// ID: 40204011
 
 #ifndef PLAYER_H
 #define PLAYER_H
@@ -17,7 +15,7 @@ public:
 	PlayerOrder(string playerOrder);
 	// Get order method
 	string getOrder();
-
+	void execute();
 private:
 	// store order
 	string playerOrder;
@@ -41,12 +39,17 @@ public:
 	// Show a list of territories to be attacked
 	void toAttack();
 	// Put orders in a list
-	void issueOrder(string order);
+	void issueOrder();
 	
 	string getName();
         void setName(string newName);
         Hand* hand;
-        int reinforcementArmies;
+		void setReinforcementPool(int reinforcementPool);
+
+		int getReinforcementPool();
+
+		void executeTopOrder();
+		
 public:
 	// Store name of a player
 	string name;
@@ -58,6 +61,7 @@ public:
 	vector<PlayerOrder*> orderList;
 	static Player* NeutralPlayer;
 	std::vector<Player*>* negotiating;
+	int reinforcementPool;
 };
 
 
