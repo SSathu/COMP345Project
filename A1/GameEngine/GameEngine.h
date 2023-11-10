@@ -44,10 +44,16 @@ class GameEngine {
         static std::string stateToString(State state);
         friend std::ostream& operator<<(std::ostream& os, const GameEngine& engine); // Stream insertion operator
 
-        void startupPhase(std::string validateOrGamestart);
+        void sartupPhase(std::string validateOrGamestart);
         void startupPhase(std::string loadmapOrAddplayer, std::string playernameOrFilename);
+
+        void reinforcementPhase();
         Map* gameEngineMap;
+
         vector<Player*> players;
+        void issueOrderPhase();
+        bool executeOrdersPhase();
+        void mainGameLoop(GameEngine* game);
     private:
         // Instance variable holding the game's current state
         State* currentState;

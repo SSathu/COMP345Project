@@ -1,6 +1,6 @@
 #include <iostream>
 #include "GameEngine.h"
-
+using namespace std;
 // Constructor that initializes all transistions and currentState to Start
 GameEngine::GameEngine() : currentState(new State(State::start)) {
     // Initialize stateTransitions
@@ -182,5 +182,92 @@ void GameEngine::startupPhase(std::string validateOrGamestart) {
         // 5) switch game state to "Play"
         cout << "Now in play phase!" << endl;
     }
+
 }
 
+void GameEngine::reinforcementPhase() {
+    // min reinforecement
+    int min = 3;
+    int reinforecement = 0;
+   // calculate number of armies
+    for (Player* player : players) {
+        int totalOwned = player->territory->size();
+        int tempt = totalOwned;
+        reinforecement = max(min, totalOwned / 3);
+      
+        // calculate bonus
+        while (tempt != 0) {
+            reinforecement += 2;
+            tempt--;
+        }
+
+        int currentReinforcementPool = player->getReinforcementPool();
+        player->setReinforcementPool(currentReinforcementPool + reinforecement);
+
+    }
+}
+
+
+void GameEngine::issueOrderPhase() {
+    int index = 0;
+    for(int i = 0; i < players.size(); ++i){
+    
+        Player* currentPlayer = players[index];
+
+        
+        if (!currentPlayer->orderList.empty()) {
+            currentPlayer->issueOrder();
+        }
+        // Move to the next player in a round-robin fashion
+        index = (index + 1) % players.size();
+    }
+
+}
+
+   bool GameEngine::executeOrdersPhase() {
+                // Execute other orders in a round-robin fashion
+        bool continueGame = true;
+           while (continueGame) {
+
+                    for (Player* player : players) {
+              
+                        if (!player->orderList.empty()) {
+                            player->executeTopOrder();
+                            continueGame = true;
+                        }
+                        else {
+                            continueGame = false;
+                        }
+                    }
+                }
+
+                // Check for player elimination and game termination
+                vector<Player*>::iterator iterator = players.begin();
+                while (iterator != players.end()) {
+                    if ((*iterator)->territory->size() == 0) {
+                        std::cout << "Player " << (*iterator)->getName() << " has been eliminated from the game." << std::endl;
+                        delete* iterator;
+                        iterator = players.erase(iterator);
+                    }
+                    
+                    else {
+                        ++iterator;
+                    }
+                }
+            }
+
+  void GameEngine::mainGameLoop(GameEngine *game) {
+       while (true) {
+           if (game->players.size() > 1) {
+               reinforcementPhase();
+               issueOrderPhase();
+               executeOrdersPhase();
+           }
+           else {
+               break;
+           }
+         
+ 
+     
+         }
+}

@@ -117,8 +117,42 @@ void testStartupPhase(){
     }
 }
 
+void testMainGameLoop() {
+    // Create territories
+    Territory* territory = new Territory("Territory 1");
+    Territory* territory2 = new Territory("Territory 2");
+  
+  
+
+    std::vector<Territory*> territories = { territory, territory2 };
+    std::vector<Player*> players;
+
+    // Create players and territories
+    Player* player = new Player("Player 1", { territory1 });
+    Player* player2 = new Player("Player 2", { territory2 });
+   
+
+    players.push_back(player);
+    players.push_back(player2);
+
+    // Create game engine
+    GameEngine gameEngine(players, territories);
+
+    // Run game loop
+    gameEngine.mainGameLoop();
+
+    // Clean up memory
+    for (Player* player : players) {
+        delete player;
+    }
+
+    for (Territory* territory : territories) {
+        delete territory;
+    }
+}
 int main(){
 testGameStates();
+testMainGameLoop();
 return 0;
 }
 
