@@ -13,12 +13,14 @@ class PlayerOrder {
 public:
 	// Constructor
 	PlayerOrder(string playerOrder);
+	PlayerOrder(Card playerOrderCard);
 	// Get order method
 	string getOrder();
 	void execute();
 private:
 	// store order
 	string playerOrder;
+	Card playerOrderCard;
 };
 
 class Territory;
@@ -26,7 +28,7 @@ class Player {
 public:
 	// Constuctors and Destructor
 	Player();
-	Player(string name, std::vector<Territory*>* territory, vector<string> card, vector<PlayerOrder*> orderList);
+	Player(string name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<PlayerOrder*> orderList);
 	Player(Player &player);
 	~Player();
 
@@ -56,7 +58,7 @@ public:
 	// Store territories
 	std::vector<Territory*>* territory;
 	// Store cards
-	vector<string> card;
+	std::vector<Card*>* card;
 	// Store a list of orders
 	vector<PlayerOrder*> orderList;
 	static Player* NeutralPlayer;

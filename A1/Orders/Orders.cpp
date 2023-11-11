@@ -53,12 +53,60 @@ AdvanceOrder::AdvanceOrder(Player* issuingPlayer, Territory* start, Territory* d
 
 
 bool AdvanceOrder::validate(){ 
-    if(std::find(issuingPlayer->territory->begin(), issuingPlayer->territory->end(), start) == issuingPlayer->territory->end()){
-            return false;
-        }
-    // TO FINISH    
-    return false; }
-void AdvanceOrder::execute() { // TO FINISH
+    // source terr != issuing players terr
+    if(std::find(issuingPlayer->territory->begin(), issuingPlayer->territory->end(), start) == issuingPlayer->territory->end()) return false;
+    // territories not adjacent
+    else if(std::find(start->neighbors->begin(),start->neighbors->end(),destination) == start->neighbors->end()) return false;
+    // target player is negociating with issuing player
+    else if(destination->playerOwner != issuingPlayer 
+    && std::find(issuingPlayer->negotiating->begin(),issuingPlayer->negotiating->end(), destination->playerOwner) != issuingPlayer->negotiating->end()){
+        return false;
+    }
+        return true;
+}
+
+void AdvanceOrder::execute() { 
+
+    // both territories from issuing player
+    if(start->playerOwner == issuingPlayer && destination ->playerOwner == issuingPlayer){
+        destination->numArmies += numberOfArmies;
+        start->numArmies -= numberOfArmies;
+    }
+    // different players
+    if(destination->playerOwner != issuingPlayer){
+
+        srand(static_cast<unsigned>(time(0))); //rand generator
+        int remainingAttackers = *(start->numArmies);
+        int remainingDefenders = *(destination->numArmies);
+
+    while(remainingAttackers > 0 && remainingDefenders > 0 ){
+
+            if(rand() % 100 < 70){
+                remainingAttackers--;
+            }
+        
+            if(rand() % 100 < 60){
+                remainingDefenders--;
+            }
+        
+    }
+    
+    // Attackers Won
+    if(remainingAttackers > 0){
+        cout << "Attack successful! " << issuingPlayer->name << " has captured " << destination->getName() << endl;
+        destination->playerOwner->reinforcementPool -= *(destination->numArmies);
+        *(destination->numArmies) = remainingAttackers;
+        destination->setPlayer(issuingPlayer);
+        
+        int randCardNumb = std::rand()%5;
+        Card newCard(randCardNumb);
+        issuingPlayer->card->push_back(&newCard);
+    }else{
+        cout << "Attack failed! " << destination->getName() << " won against Attackers:  " << issuingPlayer->name  << endl;
+    }
+
+        
+    }
 }
 void AdvanceOrder::copy(AdvanceOrder &obj){this->Name = obj.Name;}
 
@@ -71,13 +119,19 @@ BombOrder::BombOrder(const BombOrder &obj){this->Name = obj.Name;}
 BombOrder::BombOrder(Player* issuingPlayer, Territory* attackedTerritory) : Order(), issuingPlayer(issuingPlayer), attackedTerritory(attackedTerritory){}
 
 bool BombOrder::validate(){ 
+    // issuing = attacked
     if(attackedTerritory->playerOwner = issuingPlayer){
             return false;
     }
+    // target not adjacent to any owned by iussing
     for(Territory* terri : *(issuingPlayer->territory)){
             if(std::find(attackedTerritory->neighbors->begin(), attackedTerritory->neighbors->end(), terri) == attackedTerritory->neighbors->end()){
                 return false;
             }
+    }
+    //issuing negociating with attacked
+    if(std::find(issuingPlayer->negotiating->begin(),issuingPlayer->negotiating->end(), attackedTerritory->playerOwner) != issuingPlayer->negotiating->end()){
+        return false;
     }
 }
 

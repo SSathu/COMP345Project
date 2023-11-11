@@ -8,6 +8,10 @@ PlayerOrder::PlayerOrder(string playerOrder) {
 	this->playerOrder = playerOrder;
 }
 
+PlayerOrder::PlayerOrder(Card playCard){
+	this->playerOrderCard = playCard;
+}
+
 // Get the order information
 string PlayerOrder::getOrder() {
 	return playerOrder;
@@ -28,7 +32,7 @@ void PlayerOrder::execute() {
 	}
 
 	// Parameterized constructor
-	Player::Player(string  name, std::vector<Territory*>* territory, vector<string>card, vector<PlayerOrder*> orderList) {
+	Player::Player(string  name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<PlayerOrder*> orderList) {
 		this->name = name;
 		this->territory = territory;
 		this->card = card;
@@ -47,7 +51,7 @@ void PlayerOrder::execute() {
 	Player::~Player() {
 		name.clear();
 		territory->clear();
-		card.clear();
+		card->clear();
 	for (PlayerOrder* order : orderList) {
 				delete order;
 		}
@@ -82,7 +86,7 @@ void PlayerOrder::execute() {
 		}
 		os << endl;
 		os << "Cards: " << endl;
-		for (string& s2 : player.card) {
+		for (Card* s2 : *(player.card)) {
 			os << "-" << s2 << endl;
 		}
 		os << endl;
@@ -142,11 +146,11 @@ void PlayerOrder::execute() {
 			}
 			cout << endl;
 
-			if (!card.empty()) {
-				cout << "Using card: " << card.back() << endl;
-				orderList.push_back(new PlayerOrder(card.back()));
+			if (!card->empty()) {
+				cout << "Using card: " << card->back() << endl;
+				orderList.push_back(new PlayerOrder(*(card->back())));
 				//  remove the used card from the hand
-				card.pop_back(); 
+				card->pop_back(); 
 			}
 			cout << endl;
 

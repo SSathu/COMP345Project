@@ -190,7 +190,7 @@ void GameEngine::startupPhase(std::string validateOrGamestart) {
 
         // 3) give 50 armies to each as reinforcements
         for (int i = 0; i < players.size(); ++i) {
-            players[i]->reinforcementArmies = 50;
+            players[i]->reinforcementPool = 50;
         }
 
         // 4) have each player draw() 2 cards
