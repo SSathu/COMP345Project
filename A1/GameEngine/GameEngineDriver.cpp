@@ -13,7 +13,7 @@ void testGameStates() {
     // Loop asking the user to prompt a transition until they exit the program
     while (true) {
         // Checks if the game is ended
-        if(*gameEngine.getCurrentState() == State::end){
+        if(*gameEngine.getCurrentState() == State::END){
             std::cout << "Thank you for playing!" << std::endl;
             break;
         }
@@ -85,7 +85,6 @@ void testStartupPhase(){
             }
         }
 
-
         else if (input == "addplayer"){
             if (gameEngine.players.size() == 6){
                 std::cout << "Max players achieved already!" << std::endl;
@@ -96,7 +95,6 @@ void testStartupPhase(){
                 gameEngine.startupPhase("addplayer", input);
             }
         }
-
 
         else if (input == "gamestart"){
             if (gameEngine.gameEngineMap == 0){
@@ -121,8 +119,8 @@ void testMainGameLoop() {
     // Create territories
     Territory* territory = new Territory("Territory 1");
     Territory* territory2 = new Territory("Territory 2");
-  
-  
+
+
 
     std::vector<Territory*> territories = { territory, territory2 };
     std::vector<Player*> players;
@@ -130,7 +128,7 @@ void testMainGameLoop() {
     // Create players and territories
     Player* player = new Player("Player 1", { territory1 });
     Player* player2 = new Player("Player 2", { territory2 });
-   
+
 
     players.push_back(player);
     players.push_back(player2);

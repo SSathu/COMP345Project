@@ -54,7 +54,7 @@ void testGameStates() {
     // Loop asking the user to prompt a transition until they exit the program
     while (true) {
         // Checks if the game is ended
-        if(*gameEngine.getCurrentState() == State::end){
+        if(*gameEngine.getCurrentState() == State::END){
             std::cout << "Thank you for playing!" << std::endl;
             break;
         }

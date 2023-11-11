@@ -7,6 +7,16 @@
 
 #include <string>
 #include <vector>
+#include "../GameEngine/GameEngine.h"
+
+enum Commands {
+    LOADMAP,
+    VALIDATEMAP,
+    ADDPLAYER,
+    GAMESTART,
+    REPLAY,
+    QUIT,
+};
 
 class Command {
 private:
@@ -36,11 +46,11 @@ public:
     CommandProcessor(const CommandProcessor& other);
     ~CommandProcessor();
 
-    bool validate(std::string command);
+    static bool validate(const std::string& command, GameEngine& gameEngine);
 
     // Getters
     std::vector<Command*>* getCommandsList();
-    Command * getCommand();
+    Command * getCommand(GameEngine& gameEngine);
 
     friend std::ostream& operator<<(std::ostream& os, const CommandProcessor& processor);
 };
@@ -53,25 +63,23 @@ public:
     FileLineReader(const FileLineReader& other);
     ~FileLineReader();
 
-    void readLineFromFile();
+    void readLineFromFile(std::string& fileName);
 
     // Getter
     std::vector<std::string*>* getLines();
 };
 
-
 // This is an adapter class between a FileLineReader and a CommandProcessor
 class FileCommandProcessorAdapter : public CommandProcessor {
 private:
     FileLineReader* fileLineReader;
+    static int currentLine;
 public:
     FileCommandProcessorAdapter();
     FileCommandProcessorAdapter(const FileCommandProcessorAdapter& other);
     ~FileCommandProcessorAdapter();
 
-    std::string readCommand();
-    Command* passCommand();
-
+    std::string readCommand() override;
 
     // Getters
     FileLineReader* getFileLineReader();

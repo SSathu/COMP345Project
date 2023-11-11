@@ -1,24 +1,40 @@
 #include <iostream>
+#include <map>
+#include <string>
 #include "GameEngine.h"
+#include "../Utils/GameUtils.h"
+#include "../CommandProcessing/CommandProcessing.h"
 using namespace std;
+
+// Function to initialize the stateTransition map
+void initializeStateTransition(std::map<State, std::map<std::string, State>>* stateTransitions){
+    (*stateTransitions)[State::START]["loadmap"] = State::MAP_LOADED;
+    (*stateTransitions)[State::MAP_LOADED]["loadmap"] = State::MAP_LOADED;
+    (*stateTransitions)[State::MAP_LOADED]["validatemap"] = State::MAP_VALIDATED;
+    (*stateTransitions)[State::MAP_VALIDATED]["addplayer"] = State::PLAYERS_ADDED;
+    (*stateTransitions)[State::PLAYERS_ADDED]["addplayer"] = State::PLAYERS_ADDED;
+    (*stateTransitions)[State::PLAYERS_ADDED]["gamestart"] = State::ASSIGN_REINFORCEMENTS;
+    (*stateTransitions)[State::ASSIGN_REINFORCEMENTS]["issueorder"] = State::ISSUE_ORDERS;
+    (*stateTransitions)[State::ISSUE_ORDERS]["issueorder"] = State::ISSUE_ORDERS;
+    (*stateTransitions)[State::ISSUE_ORDERS]["endissueorders"] = State::EXECUTE_ORDERS;
+    (*stateTransitions)[State::EXECUTE_ORDERS]["endexecorders"] = State::ASSIGN_REINFORCEMENTS;
+    (*stateTransitions)[State::EXECUTE_ORDERS]["execorder"] = State::EXECUTE_ORDERS;
+    (*stateTransitions)[State::EXECUTE_ORDERS]["WIN"] = State::WIN;
+    (*stateTransitions)[State::WIN]["quit"] = State::END;
+    (*stateTransitions)[State::WIN]["replay"] = State::START;
+}
+
+
 // Constructor that initializes all transistions and currentState to Start
-GameEngine::GameEngine() : currentState(new State(State::start)) {
+GameEngine::GameEngine() : currentState(new State(State::START)) {
     // Initialize stateTransitions
     stateTransitions = new std::map<State, std::map<std::string, State>>();
-    (*stateTransitions)[State::start]["loadmap"] = State::map_loaded;
-    (*stateTransitions)[State::map_loaded]["loadmap"] = State::map_loaded;
-    (*stateTransitions)[State::map_loaded]["validatemap"] = State::map_validated;
-    (*stateTransitions)[State::map_validated]["addplayer"] = State::players_added;
-    (*stateTransitions)[State::players_added]["addplayer"] = State::players_added;
-    (*stateTransitions)[State::players_added]["assigncountries"] = State::assign_reinforcement;
-    (*stateTransitions)[State::assign_reinforcement]["issueorder"] = State::issue_orders;
-    (*stateTransitions)[State::issue_orders]["issueorder"] = State::issue_orders;
-    (*stateTransitions)[State::issue_orders]["endissueorders"] = State::execute_orders;
-    (*stateTransitions)[State::execute_orders]["endexecorders"] = State::assign_reinforcement;
-    (*stateTransitions)[State::execute_orders]["execorder"] = State::execute_orders;
-    (*stateTransitions)[State::execute_orders]["win"] = State::win;
-    (*stateTransitions)[State::win]["end"] = State::end;
-    (*stateTransitions)[State::win]["play"] = State::start;
+    initializeStateTransition(stateTransitions);
+}
+
+GameEngine::GameEngine(State *initialState) : currentState(initialState){
+    stateTransitions = new std::map<State, std::map<std::string, State>>();
+    initializeStateTransition(stateTransitions);
 }
 
 // Copy constructor
@@ -57,17 +73,58 @@ State* GameEngine::getCurrentState() {
 
 // Validates the input if it corresponds to a state's edge, then triggers the transition
 void GameEngine::processInput(const std::string& input) {
-    if ((*stateTransitions)[*currentState].find(input) != (*stateTransitions)[*currentState].end()) {
+    if (validateInput(input))
         transitionTo(&(*stateTransitions)[*currentState][input]);
-    } else {
+    else {
         std::cout << "No transitions found given: " << input << std::endl;
     }
+}
+
+bool GameEngine::validateInput(const std::string &input) {
+    return (*stateTransitions)[*currentState].find(input) != (*stateTransitions)[*currentState].end();
 }
 
 // Stream insertion operator, returning the game's state
 std::ostream &operator<<(std::ostream &os, const GameEngine &engine) {
     os << "Game's current state: " << GameEngine::stateToString(*engine.currentState);
     return os;
+}
+
+void GameEngine::startupPhase() {
+    cout << "Startup Phase" << endl << endl;
+
+    cout << "write '-console' to read from console" << endl;
+    cout << "write '-file <filename>' to read from file" << endl;
+
+    string input;
+    cout << "Enter command: ";
+    getline(cin, input);
+
+    // Tokenize input
+    std::vector<std::string> inputTokens = splitString(input);
+    std::string firstArgument = inputTokens.at(0);
+
+    if(firstArgument == "-console"){
+        commandProcessor = new CommandProcessor();
+
+        // While the currentState is not ASSIGN_REINFORCEMENTS
+        while(*currentState != State::ASSIGN_REINFORCEMENTS){
+            Command* command = commandProcessor->getCommand(*this);
+
+        }
+    }
+    else{
+
+    }
+
+
+}
+
+string* GameEngine::executeCommand(Command* command) {
+    vector<string> commandTokens = splitString(*command->getCommand());
+    string* effect;
+
+    return nullptr;
 }
 
 //Startup Phase
@@ -182,19 +239,18 @@ void GameEngine::startupPhase(std::string validateOrGamestart) {
         // 5) switch game state to "Play"
         cout << "Now in play phase!" << endl;
     }
-
 }
 
 void GameEngine::reinforcementPhase() {
     // min reinforecement
     int min = 3;
     int reinforecement = 0;
-   // calculate number of armies
+    // calculate number of armies
     for (Player* player : players) {
         int totalOwned = player->territory->size();
         int tempt = totalOwned;
         reinforecement = max(min, totalOwned / 3);
-      
+
         // calculate bonus
         while (tempt != 0) {
             reinforecement += 2;
@@ -207,14 +263,13 @@ void GameEngine::reinforcementPhase() {
     }
 }
 
-
 void GameEngine::issueOrderPhase() {
     int index = 0;
     for(int i = 0; i < players.size(); ++i){
-    
+
         Player* currentPlayer = players[index];
 
-        
+
         if (!currentPlayer->orderList.empty()) {
             currentPlayer->issueOrder();
         }
@@ -224,50 +279,50 @@ void GameEngine::issueOrderPhase() {
 
 }
 
-   bool GameEngine::executeOrdersPhase() {
-                // Execute other orders in a round-robin fashion
-        bool continueGame = true;
-           while (continueGame) {
+bool GameEngine::executeOrdersPhase() {
+    // Execute other orders in a round-robin fashion
+    bool continueGame = true;
+    while (continueGame) {
 
-                    for (Player* player : players) {
-              
-                        if (!player->orderList.empty()) {
-                            player->executeTopOrder();
-                            continueGame = true;
-                        }
-                        else {
-                            continueGame = false;
-                        }
-                    }
-                }
+        for (Player* player : players) {
 
-                // Check for player elimination and game termination
-                vector<Player*>::iterator iterator = players.begin();
-                while (iterator != players.end()) {
-                    if ((*iterator)->territory->size() == 0) {
-                        std::cout << "Player " << (*iterator)->getName() << " has been eliminated from the game." << std::endl;
-                        delete* iterator;
-                        iterator = players.erase(iterator);
-                    }
-                    
-                    else {
-                        ++iterator;
-                    }
-                }
+            if (!player->orderList.empty()) {
+                player->executeTopOrder();
+                continueGame = true;
             }
+            else {
+                continueGame = false;
+            }
+        }
+    }
 
-  void GameEngine::mainGameLoop(GameEngine *game) {
-       while (true) {
-           if (game->players.size() > 1) {
-               reinforcementPhase();
-               issueOrderPhase();
-               executeOrdersPhase();
-           }
-           else {
-               break;
-           }
-         
- 
-     
-         }
+    // Check for player elimination and game termination
+    vector<Player*>::iterator iterator = players.begin();
+    while (iterator != players.end()) {
+        if ((*iterator)->territory->size() == 0) {
+            std::cout << "Player " << (*iterator)->getName() << " has been eliminated from the game." << std::endl;
+            delete* iterator;
+            iterator = players.erase(iterator);
+        }
+
+        else {
+            ++iterator;
+        }
+    }
+}
+
+void GameEngine::mainGameLoop(GameEngine *game) {
+    while (true) {
+        if (game->players.size() > 1) {
+            reinforcementPhase();
+            issueOrderPhase();
+            executeOrdersPhase();
+        }
+        else {
+            break;
+        }
+
+
+
+    }
 }
