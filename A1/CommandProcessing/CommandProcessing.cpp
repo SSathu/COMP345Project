@@ -24,25 +24,26 @@ vector <Command*>* CommandProcessor::getCommandsList() {
 }
 
 string CommandProcessor::readCommand() {
-    cout << "Enter command: " << endl;
+    cout << "Enter command:";
     string command;
     getline(cin, command);
     return command;
 }
 
 Command* CommandProcessor::saveCommand(string* command, string* effect) {
-    Command* newCommand = new Command(command, effect);
+    auto* newCommand = new Command(command, effect);
     commands->push_back(newCommand);
     return newCommand;
 }
 
 Command* CommandProcessor::getCommand(GameEngine& gameEngine) {
     while(true) {
-        string commandString = readCommand();
+        string commandString = this->readCommand();
+
         string effect;
         Command* newCommand = saveCommand(new string(commandString), new string(effect));
 
-        // Tokenize the string to handle multiple arguments commands
+        // Tokenize the string to handle commands with multiple arguments
         std::vector<std::string> commandTokens = splitString(commandString);
 
         if(validate(commandTokens.at(0), gameEngine)) return newCommand;
@@ -60,7 +61,7 @@ bool CommandProcessor::validate(const string& commandString, GameEngine& gameEng
 // COMMAND CLASS //
 // Constructors and destructors
 Command::Command() {
-    this->command = new string("No CommandProcessing");
+    this->command = new string("No Command");
     this->effect = new string("No Effect");
 }
 
@@ -95,7 +96,6 @@ string* Command::getEffect() {
 }
 
 // FILELINEREADER CLASS //
-
 // Constructors and destructors
 FileLineReader::FileLineReader() {
     this->lines = new vector<string*>();
@@ -113,12 +113,20 @@ FileLineReader::~FileLineReader() {
 void FileLineReader::readLineFromFile(string& fileName) {
     // Retrieve file
     ifstream file("../Saves/" + fileName);
+
+    // Check if the file is successfully opened
+    if (!file.is_open()) {
+        cout << "Error opening file: " << fileName << ". Please try again." << endl << endl << endl;
+        return;
+    }
+
     // Read file line by line and save each line in a vector
     string line;
-    while(getline(file, line)) {
+    while (getline(file, line)) {
         lines->push_back(new string(line));
         cout << line << endl;
     }
+
     file.close();
 }
 
@@ -147,9 +155,17 @@ FileCommandProcessorAdapter::~FileCommandProcessorAdapter() {
 
 // Methods
 string FileCommandProcessorAdapter::readCommand() {
-    string line = *(fileLineReader->getLines()->at(currentLine));
-    currentLine++;
-    return line;
+    vector<string*>* lines = fileLineReader->getLines();
+
+    // Check if lines is not empty and currentLine is within bounds
+    if (lines != nullptr && !lines->empty() && currentLine < lines->size()) {
+        string line = *(lines->at(currentLine));
+        currentLine++;
+        return line;
+    } else {
+        cout << "No more lines to read." << endl;
+        return "";
+    }
 }
 
 // Getters
@@ -157,5 +173,31 @@ FileLineReader* FileCommandProcessorAdapter::getFileLineReader() {
     return fileLineReader;
 }
 
+// Overloaded operators
+ostream& operator<<(ostream& os, const Command& command) {
+    os << "{Command: " << *(command.command);
+    os << ", Effect: " << *(command.effect) << "}";
+    return os;
+}
 
+ostream& operator<<(ostream& os, const CommandProcessor& processor) {
+    os << "Commands: " << endl;
+    for(Command* command : *processor.commands) {
+        os << " - " << *command << endl;
+    }
+    return os;
+}
 
+ostream& operator<<(ostream& os, const FileLineReader& reader) {
+    os << "FileLineReader's Lines: " << endl;
+    for(string* line : *reader.lines) {
+        os << *line << endl;
+    }
+    return os;
+}
+
+ostream& operator<<(ostream& os, const FileCommandProcessorAdapter& adapter) {
+    os << "FileCommandProcessorAdapter: " << endl;
+    os << *adapter.fileLineReader;
+    return os;
+}

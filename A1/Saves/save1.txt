@@ -1,0 +1,9 @@
+loadmap Texas.map
+validatemap
+addplayer Player-1
+addplayer Player-2
+addplayer Player-3
+addplayer Player-4
+addplayer Player-5
+addplayer Player-6
+gamestart

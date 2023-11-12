@@ -1,6 +1,7 @@
 //Written by Kiran Freund, ID: 40195543
 
 #include <algorithm>
+#include <filesystem>
 #include "Map.h"
 #include "../Player/Player.h"
 
@@ -171,8 +172,7 @@ bool Map::isConnected() {
 
 //MapLoader creating a map from a filename
 bool MapLoader::createMapFromFile(string& fileName, Map* map2make) {
-	ifstream inputFileStream;
-	inputFileStream.open(fileName);
+	ifstream inputFileStream("../Map/MapFiles/" + fileName);
 
 	//Reject if file couldn't open
 	if (!inputFileStream.is_open()) {

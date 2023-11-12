@@ -53,7 +53,7 @@ class GameEngine {
         void startupPhase();
 
         Map* gameEngineMap;
-        vector<Player*> players;
+        vector<Player*>* players;
         void reinforcementPhase();
         void issueOrderPhase();
         bool executeOrdersPhase();
@@ -74,7 +74,6 @@ class GameEngine {
         string* validateMap();
         string* addPlayer(string* playerName);
         string* gameStart();
-
 
 };
 

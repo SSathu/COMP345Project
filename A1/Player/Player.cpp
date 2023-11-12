@@ -1,7 +1,8 @@
-
 #include "Player.h"
 #include <iostream>
-#include "../Map/Map.h"
+
+// Static variable initialization NeutralPlayer
+Player* Player::NeutralPlayer = nullptr;
 
 // Constructor
 PlayerOrder::PlayerOrder(string playerOrder) {

@@ -5,8 +5,10 @@ using namespace std;
 
 
 void testCommandProcessor() {
-    GameEngine* gameEngine = new GameEngine();
+    auto* gameEngine = new GameEngine();
     gameEngine->startupPhase();
+
+    delete gameEngine;
 }
 
 int main() {

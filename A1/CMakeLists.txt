@@ -25,13 +25,13 @@ add_executable(a1_335_p5
     Player/Player.h
     Player/Player.cpp
 
-#   CommandProcessing/CommandProcessingDriver.cpp
+   CommandProcessing/CommandProcessingDriver.cpp
     CommandProcessing/CommandProcessing.cpp
     CommandProcessing/CommandProcessing.h
 
     Utils/GameUtils.cpp
     Utils/GameUtils.h
 
-    MainDriver.cpp
+#    MainDriver.cpp
 
 )

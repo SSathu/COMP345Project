@@ -19,6 +19,8 @@ public:
 
     Command* saveEffect(std::string* effect);
 
+    friend std::ostream& operator<<(std::ostream& os, const Command& command);
+
     // Getters
     std::string* getCommand();
     std::string* getEffect();
@@ -53,6 +55,7 @@ public:
     ~FileLineReader();
 
     void readLineFromFile(std::string& fileName);
+    friend std::ostream& operator<<(std::ostream& os, const FileLineReader& reader);
 
     // Getter
     std::vector<std::string*>* getLines();
@@ -69,6 +72,8 @@ public:
     ~FileCommandProcessorAdapter();
 
     std::string readCommand() override;
+
+    friend std::ostream& operator<<(std::ostream& os, const FileCommandProcessorAdapter& adapter);
 
     // Getters
     FileLineReader* getFileLineReader();
