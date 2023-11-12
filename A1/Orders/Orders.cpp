@@ -133,6 +133,7 @@ bool BombOrder::validate(){
     if(std::find(issuingPlayer->negotiating->begin(),issuingPlayer->negotiating->end(), attackedTerritory->playerOwner) != issuingPlayer->negotiating->end()){
         return false;
     }
+    return true;
 }
 
 
@@ -168,7 +169,8 @@ void BlockadeOrder::execute() {
     if(this->validate()){
         *(area->numArmies) *= 2;
         area->playerOwner = Player::NeutralPlayer;
-        issuingPlayer->territory->erase(std::remove(issuingPlayer->territory->begin(), issuingPlayer->territory->end(), *area), issuingPlayer->territory->end());
+
+        issuingPlayer->territory->erase(std::remove(issuingPlayer->territory->begin(), issuingPlayer->territory->end(), area), issuingPlayer->territory->end());
     }
 }
 void BlockadeOrder::copy(BlockadeOrder &obj){this->Name = obj.Name;}

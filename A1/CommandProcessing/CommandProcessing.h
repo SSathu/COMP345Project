@@ -1,7 +1,3 @@
-//
-// Created by ismai on 11/8/2023.
-//
-
 #ifndef A1_335_P5_COMMANDPROCESSING_H
 #define A1_335_P5_COMMANDPROCESSING_H
 
@@ -9,14 +5,7 @@
 #include <vector>
 #include "../GameEngine/GameEngine.h"
 
-enum Commands {
-    LOADMAP,
-    VALIDATEMAP,
-    ADDPLAYER,
-    GAMESTART,
-    REPLAY,
-    QUIT,
-};
+class GameEngine;
 
 class Command {
 private:

@@ -1,12 +1,14 @@
 #ifndef A1_335_P5_GAMEENGINE_H
 #define A1_335_P5_GAMEENGINE_H
 
-
 #include <map>
 #include <string>
+#include "../CommandProcessing/CommandProcessing.h"
 #include "../Map/Map.h"
 #include "../Player/Player.h"
-#include "../CommandProcessing/CommandProcessing.h"
+
+class CommandProcessor;
+class Command;
 
 enum State {
     START,
@@ -49,12 +51,10 @@ class GameEngine {
         friend std::ostream& operator<<(std::ostream& os, const GameEngine& engine); // Stream insertion operator
 
         void startupPhase();
-        void startupPhase(std::string validateOrGamestart);
-        void startupPhase(std::string loadmapOrAddplayer, std::string playernameOrFilename);
 
-        void reinforcementPhase();
         Map* gameEngineMap;
         vector<Player*> players;
+        void reinforcementPhase();
         void issueOrderPhase();
         bool executeOrdersPhase();
         void mainGameLoop(GameEngine* game);
@@ -66,8 +66,15 @@ class GameEngine {
         std::map<State, std::map<std::string, State>>* stateTransitions;
         // Triggers the transition to 'state'
         void transitionTo(State* state);
-        void initCommandProcessor();
+        // Executes the command and returns its effect
         string* executeCommand(Command* command);
+
+        // Methods in startup phase
+        string* loadMap(string mapName);
+        string* validateMap();
+        string* addPlayer(string* playerName);
+        string* gameStart();
+
 
 };
 

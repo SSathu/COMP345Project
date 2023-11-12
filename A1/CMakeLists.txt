@@ -3,28 +3,35 @@ project(a1_335_p5)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(a1_335_p5#
-#    GameEngine/GameEngineDriver.cpp
+add_executable(a1_335_p5
+
+#   GameEngine/GameEngineDriver.cpp
     GameEngine/GameEngine.h
     GameEngine/GameEngine.cpp
 
-#    Map/MapDriver.h
+#   Map/MapDriver.h
     Map/Map.cpp
     Map/Map.h
 
-#    Orders/OrdersDriver.cpp
+#   Orders/OrdersDriver.cpp
     Orders/Orders.cpp
     Orders/Orders.h
 
-#    Cards/CardDriver.cpp
+#   Cards/CardDriver.cpp
     Cards/Cards.h
     Cards/Cards.cpp
 
-#    Player/PlayerDriver.cpp
+#   Player/PlayerDriver.cpp
     Player/Player.h
     Player/Player.cpp
 
+#   CommandProcessing/CommandProcessingDriver.cpp
+    CommandProcessing/CommandProcessing.cpp
+    CommandProcessing/CommandProcessing.h
+
+    Utils/GameUtils.cpp
+    Utils/GameUtils.h
+
     MainDriver.cpp
-        Command/CommandProcessing.cpp
-        Command/CommandProcessing.h
+
 )
