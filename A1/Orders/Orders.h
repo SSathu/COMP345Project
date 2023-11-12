@@ -16,6 +16,7 @@ public:
     Order(string* name);
     Order(const Order &obj);
     string* Name;
+    string* OrderType;
     bool validate();
     void execute();
     void copy(Order &obj);

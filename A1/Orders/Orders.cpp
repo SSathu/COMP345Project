@@ -8,25 +8,26 @@
 using namespace std;
 
 // Implementations for Order class
-Order::Order(){this->Name = new string("NoName");}  // Allocate memory for Name
-Order::Order(string* name){this->Name = name;}  // Change parameter to string pointer
-Order::Order(const Order &obj){this->Name = new string(*(obj.Name));}  // Allocate memory for Name
+Order::Order(){this->Name = new string("NoName"), this->OrderType = new string("Order");}  // Allocate memory for Name
+Order::Order(string* name){this->Name = name, this->OrderType = new string("Order");}  // Change parameter to string pointer
+Order::Order(const Order &obj){this->Name = new string(*(obj.Name)), this->OrderType = new string("Order");;}  // Allocate memory for Name
 bool Order::validate(){ return false; }
 void Order::execute() {}
-void Order::copy(Order &obj){this->Name = new string(*(obj.Name));}  // Allocate memory for Name
+void Order::copy(Order &obj){this->Name = new string(*(obj.Name)), this->OrderType = new string("Order");;}  // Allocate memory for Name
 string Order::getName() const{
     return *Name;
 }
+
 void Order::streamInsertion() {
 	cout << "Order name: "<< this->getName() << endl;
 }
 
 // Implementations for DeployOrder
-DeployOrder::DeployOrder(){this->Name = new string("NoName");}
-DeployOrder::DeployOrder(string* name){this->Name = name;}
-DeployOrder::DeployOrder(const DeployOrder &obj){this->Name = obj.Name;}
+DeployOrder::DeployOrder(){this->Name = new string("NoName"), this->OrderType = new string("DeployOrder");}
+DeployOrder::DeployOrder(string* name){this->Name = name, this->OrderType = new string("DeployOrder");}
+DeployOrder::DeployOrder(const DeployOrder &obj){this->Name = obj.Name, this->OrderType = new string("DeployOrder");}
 DeployOrder::~DeployOrder(){}
-DeployOrder::DeployOrder(Player* issuingPlayer, int numOfArmies, Territory* location) :Order(), issuingPlayer(issuingPlayer), numberOfArmies(numberOfArmies), area(area){					}
+DeployOrder::DeployOrder(Player* issuingPlayer, int numOfArmies, Territory* location) :Order(), issuingPlayer(issuingPlayer), numberOfArmies(numberOfArmies), area(area){ this->OrderType = new string("DeployOrder");}
 
 
 bool DeployOrder::validate(){
@@ -47,9 +48,9 @@ void DeployOrder::copy(DeployOrder &obj){this->Name = obj.Name;}
 
 // Implementations for AdvanceOrder
 AdvanceOrder::AdvanceOrder(){this->Name = new string("NoName");}
-AdvanceOrder::AdvanceOrder(string* name){this->Name = name;}
-AdvanceOrder::AdvanceOrder(const AdvanceOrder &obj){this->Name = obj.Name;}
-AdvanceOrder::AdvanceOrder(Player* issuingPlayer, Territory* start, Territory* destination, int numberOfArmies) : Order(), isAttacking(false), issuingPlayer(issuingPlayer), start(start), destination(destination), numberOfArmies(numberOfArmies){}
+AdvanceOrder::AdvanceOrder(string* name){this->Name = name, this->OrderType = new string("AdvanceOrder");}
+AdvanceOrder::AdvanceOrder(const AdvanceOrder &obj){this->Name = obj.Name, this->OrderType = new string("AdvanceOrder");}
+AdvanceOrder::AdvanceOrder(Player* issuingPlayer, Territory* start, Territory* destination, int numberOfArmies) : Order(), isAttacking(false), issuingPlayer(issuingPlayer), start(start), destination(destination), numberOfArmies(numberOfArmies){this->OrderType = new string("AdvanceOrder");}
 
 
 bool AdvanceOrder::validate(){ 
@@ -108,15 +109,15 @@ void AdvanceOrder::execute() {
         
     }
 }
-void AdvanceOrder::copy(AdvanceOrder &obj){this->Name = obj.Name;}
+void AdvanceOrder::copy(AdvanceOrder &obj){this->Name = obj.Name, this->OrderType = new string("AdvanceOrder");}
 
 
 
 // Implementations for BombOrder
-BombOrder::BombOrder(){this->Name = new string("NoName");}
-BombOrder::BombOrder(string* name){this->Name = name;}
-BombOrder::BombOrder(const BombOrder &obj){this->Name = obj.Name;}
-BombOrder::BombOrder(Player* issuingPlayer, Territory* attackedTerritory) : Order(), issuingPlayer(issuingPlayer), attackedTerritory(attackedTerritory){}
+BombOrder::BombOrder(){this->Name = new string("NoName"), this->OrderType = new string("BombOrder");}
+BombOrder::BombOrder(string* name){this->Name = name, this->OrderType = new string("BombOrder");}
+BombOrder::BombOrder(const BombOrder &obj){this->Name = obj.Name, this->OrderType = new string("BombOrder");}
+BombOrder::BombOrder(Player* issuingPlayer, Territory* attackedTerritory) : Order(), issuingPlayer(issuingPlayer), attackedTerritory(attackedTerritory){this->OrderType = new string("BombOrder");}
 
 bool BombOrder::validate(){ 
     // issuing = attacked
@@ -147,14 +148,14 @@ void BombOrder::execute() {
     }
 
 }
-void BombOrder::copy(BombOrder &obj){this->Name = obj.Name;}
+void BombOrder::copy(BombOrder &obj){this->Name = obj.Name, this->OrderType = new string("BombOrder");}
 
 
 // Implementations for BlockadeOrder
-BlockadeOrder::BlockadeOrder(){this->Name = new string("NoName");}
-BlockadeOrder::BlockadeOrder(string* name){this->Name = name;}
-BlockadeOrder::BlockadeOrder(const BlockadeOrder &obj){this->Name = obj.Name;}
-BlockadeOrder::BlockadeOrder(Player* issuingPlayer, Territory* area) : Order(), issuingPlayer(issuingPlayer), area(area){}
+BlockadeOrder::BlockadeOrder(){this->Name = new string("NoName"), this->OrderType = new string("BlockadeOrder");}
+BlockadeOrder::BlockadeOrder(string* name){this->Name = name, this->OrderType = new string("BlockadeOrder");}
+BlockadeOrder::BlockadeOrder(const BlockadeOrder &obj){this->Name = obj.Name, this->OrderType = new string("BlockadeOrder");}
+BlockadeOrder::BlockadeOrder(Player* issuingPlayer, Territory* area) : Order(), issuingPlayer(issuingPlayer), area(area){this->OrderType = new string("BlockadeOrder");}
 
 bool BlockadeOrder::validate(){ 
     
@@ -173,14 +174,14 @@ void BlockadeOrder::execute() {
         issuingPlayer->territory->erase(std::remove(issuingPlayer->territory->begin(), issuingPlayer->territory->end(), area), issuingPlayer->territory->end());
     }
 }
-void BlockadeOrder::copy(BlockadeOrder &obj){this->Name = obj.Name;}
+void BlockadeOrder::copy(BlockadeOrder &obj){this->Name = obj.Name, this->OrderType = new string("BlockadeOrder");}
 
 
 // Implementations for AirliftOrder
 AirliftOrder::AirliftOrder(){this->Name = new string("NoName");}
-AirliftOrder::AirliftOrder(string* name){this->Name = name;}
-AirliftOrder::AirliftOrder(const AirliftOrder &obj){this->Name = obj.Name;}
-AirliftOrder::AirliftOrder(Player* issuingPlayer, int numberOfArmies, Territory* start, Territory* destination) : Order(), issuingPlayer(issuingPlayer), numberOfArmies(numberOfArmies), start(start), destination(destination){}
+AirliftOrder::AirliftOrder(string* name){this->Name = name, this->OrderType = new string("AirLiftOrder");}
+AirliftOrder::AirliftOrder(const AirliftOrder &obj){this->Name = obj.Name, this->OrderType = new string("AirLiftOrder");}
+AirliftOrder::AirliftOrder(Player* issuingPlayer, int numberOfArmies, Territory* start, Territory* destination) : Order(), issuingPlayer(issuingPlayer), numberOfArmies(numberOfArmies), start(start), destination(destination){this->OrderType = new string("AirLiftOrder");}
 
 bool AirliftOrder::validate(){
         if(start->playerOwner == issuingPlayer && destination->playerOwner == issuingPlayer){
@@ -198,14 +199,14 @@ void AirliftOrder::execute() {
     destination->numArmies += numberOfArmies;
     start->numArmies -= numberOfArmies;
 }
-void AirliftOrder::copy(AirliftOrder &obj){this->Name = obj.Name;}
+void AirliftOrder::copy(AirliftOrder &obj){this->Name = obj.Name, this->OrderType = new string("AirLiftOrder");}
 
 
 // Implementations for NegotiateOrder
 NegotiateOrder::NegotiateOrder(){this->Name = new string("NoName");}
-NegotiateOrder::NegotiateOrder(string* name){this->Name = name;}
-NegotiateOrder::NegotiateOrder(const NegotiateOrder &obj){this->Name = obj.Name;}
-NegotiateOrder::NegotiateOrder(Player* issuingPlayer, Player* targetPlayer) : Order(), issuingPlayer(issuingPlayer), targetPlayer(targetPlayer){}
+NegotiateOrder::NegotiateOrder(string* name){this->Name = name, this->OrderType = new string("NegociateOrder");}
+NegotiateOrder::NegotiateOrder(const NegotiateOrder &obj){this->Name = obj.Name, this->OrderType = new string("NegociateOrder");}
+NegotiateOrder::NegotiateOrder(Player* issuingPlayer, Player* targetPlayer) : Order(), issuingPlayer(issuingPlayer), targetPlayer(targetPlayer){this->OrderType = new string("NegociateOrder");}
 
 bool NegotiateOrder::validate(){ 
     
