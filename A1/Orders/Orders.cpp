@@ -157,12 +157,12 @@ BlockadeOrder::BlockadeOrder(string* name){this->Name = name, this->OrderType = 
 BlockadeOrder::BlockadeOrder(const BlockadeOrder &obj){this->Name = obj.Name, this->OrderType = new string("BlockadeOrder");}
 BlockadeOrder::BlockadeOrder(Player* issuingPlayer, Territory* area) : Order(), issuingPlayer(issuingPlayer), area(area){this->OrderType = new string("BlockadeOrder");}
 
-bool BlockadeOrder::validate(){ 
-    
+bool BlockadeOrder::validate(){
 	if (area->playerOwner != issuingPlayer) {
 		return false;
 	}
         return true;
+
 }
     
 void BlockadeOrder::execute() {

@@ -27,6 +27,7 @@ void PlayerOrder::execute() {
 	Player::Player(){
 		name = "";
 		territory = new vector<Territory*>;
+        negotiating = new vector<Player*>;
 		card = {};
 		orderList = {};
 		reinforcementPool = 0;
