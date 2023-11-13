@@ -4,21 +4,26 @@
 #include <vector>
 #include "../Player/Player.h"
 #include "../Map/Map.h"
-#include "../Cards/Cards.h"
 #include <algorithm>
 using namespace std;
-class Player;
-class Territory;
-class Card;
+
 // Implementations for Order class
 Order::Order(){this->Name = new string("NoName"), this->OrderType = new string("Order");}  // Allocate memory for Name
 Order::Order(string* name){this->Name = name, this->OrderType = new string("Order");}  // Change parameter to string pointer
 Order::Order(const Order &obj){this->Name = new string(*(obj.Name)), this->OrderType = new string("Order");;}  // Allocate memory for Name
 bool Order::validate(){ return false; }
-void Order::execute() {}
+void Order::execute() {
+    Notify(this);
+}
 void Order::copy(Order &obj){this->Name = new string(*(obj.Name)), this->OrderType = new string("Order");;}  // Allocate memory for Name
 string Order::getName() const{
     return *Name;
+}
+
+
+string* Order::stringToLog()
+{
+    return new string("Executed order type: " + *OrderType);
 }
 
 void Order::streamInsertion() {
@@ -41,7 +46,9 @@ bool DeployOrder::validate(){
  }
 
 void DeployOrder::execute() {
+    
     if(this->validate()){
+        Order::execute();
         this->area->numArmies += numberOfArmies;
     }
 }
@@ -70,6 +77,7 @@ bool AdvanceOrder::validate(){
 }
 
 void AdvanceOrder::execute() { 
+    Order::execute();
 
     // both territories from issuing player
     if(start->playerOwner == issuingPlayer && destination ->playerOwner == issuingPlayer){
@@ -97,16 +105,16 @@ void AdvanceOrder::execute() {
     
     // Attackers Won
     if(remainingAttackers > 0){
-        cout << "Attack successful! " << issuingPlayer->name << " has captured " << destination->territoryName << endl;
+        cout << "Attack successful! " << issuingPlayer->name << " has captured " << destination->getName() << endl;
         destination->playerOwner->reinforcementPool -= *(destination->numArmies);
         *(destination->numArmies) = remainingAttackers;
-        destination->playerOwner = issuingPlayer;
+        destination->setPlayer(issuingPlayer);
         
         int randCardNumb = std::rand()%5;
         Card newCard(randCardNumb);
         issuingPlayer->card->push_back(&newCard);
     }else{
-        cout << "Attack failed! " << destination->territoryName << " won against Attackers:  " << issuingPlayer->name  << endl;
+        cout << "Attack failed! " << destination->getName() << " won against Attackers:  " << issuingPlayer->name  << endl;
     }
 
         
@@ -142,8 +150,9 @@ bool BombOrder::validate(){
 
 
 void BombOrder::execute() {
-
     if(this->validate()){
+        Order::execute();
+
         if (attackedTerritory != nullptr && attackedTerritory->numArmies != nullptr) {
                 *(attackedTerritory->numArmies) /= 2;
         }
@@ -160,17 +169,18 @@ BlockadeOrder::BlockadeOrder(string* name){this->Name = name, this->OrderType = 
 BlockadeOrder::BlockadeOrder(const BlockadeOrder &obj){this->Name = obj.Name, this->OrderType = new string("BlockadeOrder");}
 BlockadeOrder::BlockadeOrder(Player* issuingPlayer, Territory* area) : Order(), issuingPlayer(issuingPlayer), area(area){this->OrderType = new string("BlockadeOrder");}
 
-bool BlockadeOrder::validate(){
+bool BlockadeOrder::validate(){ 
+    
 	if (area->playerOwner != issuingPlayer) {
 		return false;
 	}
         return true;
-
 }
     
 void BlockadeOrder::execute() {
 
     if(this->validate()){
+        Order::execute();
         *(area->numArmies) *= 2;
         area->playerOwner = Player::NeutralPlayer;
 
@@ -198,7 +208,8 @@ bool AirliftOrder::validate(){
      return false; 
      }
 void AirliftOrder::execute() {
-    
+    Order::execute();
+
     destination->numArmies += numberOfArmies;
     start->numArmies -= numberOfArmies;
 }
@@ -223,6 +234,8 @@ bool NegotiateOrder::validate(){
 void NegotiateOrder::execute() {
 
     if(this->validate()){
+        Order::execute();
+
         issuingPlayer->negotiating->push_back(targetPlayer);
         targetPlayer->negotiating->push_back(issuingPlayer);
     }
@@ -240,6 +253,12 @@ void OrdersList::copy(OrdersList &obj){this->orderList = obj.orderList;}
 //OrderList FUnctions
 void OrdersList::addOrder(Order* orderToAdd){
 	orderList.push_back(orderToAdd);
+    Notify(this);
+}
+
+string* OrdersList::stringToLog()
+{
+    return new string("Order Issued: " + orderList.back()->getName());
 }
 
 void OrdersList::removeOrder(int orderIndex){

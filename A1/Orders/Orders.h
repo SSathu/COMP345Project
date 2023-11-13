@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "../LogObserver/LoggingObserver.h"
 
 using namespace std;
 
@@ -9,7 +10,7 @@ class Territory;
 class Player;
 
 
-class Order
+class Order : public Subject, ILoggable
 {
 public:
     Order();
@@ -22,6 +23,8 @@ public:
     void copy(Order &obj);
 	void streamInsertion();
     string getName() const;
+
+    string* stringToLog();
     };
 
 class DeployOrder : public Order
@@ -111,7 +114,7 @@ public:
     void copy(NegotiateOrder &obj);
 };
 
-class OrdersList
+class OrdersList : public Subject, ILoggable
 {
 public:
     OrdersList();
@@ -121,4 +124,6 @@ public:
     void removeOrder(int orderIndex);
     void moveOrder(int startPos, int endPos);
     void copy(OrdersList &obj);
+
+    string* stringToLog();
 };

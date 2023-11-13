@@ -4,6 +4,8 @@
 #include "GameEngine.h"
 #include "../CommandProcessing/CommandProcessing.h"
 #include "../Utils/GameUtils.h"
+#include <chrono>       // std::chrono::system_clock
+#include <random>
 using namespace std;
 
 // Function to initialize the stateTransition map
@@ -64,6 +66,12 @@ GameEngine& GameEngine::operator=(const GameEngine& other) {
 void GameEngine::transitionTo(State* state) {
     currentState = state;
     std::cout << "State transitioned to: " << stateToString(*state) << std::endl;
+    Notify(this);
+}
+
+string* GameEngine::stringToLog()
+{
+    return new string("State transitioned to: " + stateToString(*currentState));
 }
 
 // ToString method for States
@@ -245,7 +253,11 @@ string* GameEngine::gameStart() {
 
     // 2) randomly determine order of players
     cout << "New order of player turns:" << endl;
-    std::random_shuffle(players->begin(), players->end());
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+
+
+    std::shuffle(players->begin(), players->end(), std::default_random_engine(seed));
+
     for (auto & player : *players) {
         cout << " - " << player->getName() << endl;
     }
@@ -371,7 +383,7 @@ bool GameEngine::executeOrdersPhase() {
         }
         else ++iterator;
     }
-    
+    //TODO: change return variable or change the return type of the function
     return true;
 }
 

@@ -4,6 +4,7 @@
 #include "../CommandProcessing/CommandProcessing.h"
 #include "../Map/Map.h"
 #include "../Player/Player.h"
+#include "../LogObserver/LoggingObserver.h"
 
 class CommandProcessor;
 class Command;
@@ -33,7 +34,7 @@ static const std::string stateStrings[] = {
     "End"
 };
 
-class GameEngine {
+class GameEngine : public Subject, ILoggable {
     public:
         GameEngine(); // Constructor
         GameEngine(State* initialState); // Constructor
@@ -56,6 +57,9 @@ class GameEngine {
         void issueOrderPhase();
         bool executeOrdersPhase();
         void mainGameLoop(GameEngine* game);
+
+        string* stringToLog();
+
     private:
         CommandProcessor* commandProcessor;
         // Instance variable holding the game's current state

@@ -3,10 +3,12 @@
 #include <string>
 #include <vector>
 #include "../GameEngine/GameEngine.h"
+#include "../LogObserver/LoggingObserver.h"
+
 
 class GameEngine;
 
-class Command {
+class Command : public Subject, ILoggable {
 private:
     std::string* command;
     std::string* effect;
@@ -20,12 +22,14 @@ public:
 
     friend std::ostream& operator<<(std::ostream& os, const Command& command);
 
+    string* stringToLog();
+
     // Getters
     std::string* getCommand();
     std::string* getEffect();
 };
 
-class CommandProcessor {
+class CommandProcessor : public Subject, ILoggable {
 private:
     std::vector<Command*>* commands;
 protected:
@@ -35,6 +39,7 @@ public:
     CommandProcessor();
     CommandProcessor(const CommandProcessor& other);
     ~CommandProcessor();
+    string* stringToLog();
 
     static bool validate(const std::string& command, GameEngine& gameEngine);
 
