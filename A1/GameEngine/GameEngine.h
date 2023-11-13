@@ -1,6 +1,4 @@
-#ifndef A1_335_P5_GAMEENGINE_H
-#define A1_335_P5_GAMEENGINE_H
-
+#pragma once
 #include <map>
 #include <string>
 #include "../CommandProcessing/CommandProcessing.h"
@@ -77,4 +75,3 @@ class GameEngine {
 
 };
 
-#endif //A1_335_P5_GAMEENGINE_H

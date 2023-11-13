@@ -1,6 +1,4 @@
-//
-// Created by ismai on 11/9/2023.
-//
+#pragma once
 
 #include <string>
 #include <vector>

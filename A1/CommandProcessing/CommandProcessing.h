@@ -1,5 +1,4 @@
-#ifndef A1_335_P5_COMMANDPROCESSING_H
-#define A1_335_P5_COMMANDPROCESSING_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -78,7 +77,3 @@ public:
     // Getters
     FileLineReader* getFileLineReader();
 };
-
-
-
-#endif //A1_335_P5_COMMANDPROCESSING_H

@@ -1,6 +1,4 @@
-
-#ifndef PLAYER_H
-#define PLAYER_H
+#pragma once
 
 #include <iostream>
 #include <vector>
@@ -65,6 +63,3 @@ public:
 	std::vector<Player*>* negotiating;
 	int reinforcementPool;
 };
-
-
-#endif

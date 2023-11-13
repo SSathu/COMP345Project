@@ -1,12 +1,6 @@
 #include <iostream>
 #include "Cards.h"
 
-
-
-
-
-
-
 void Deck::insertCard(Card* cardToInsert)
 {
 	deckCards->push_back(cardToInsert); //Inserts a pointer to a card into the deck
