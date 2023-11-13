@@ -2,9 +2,8 @@
 #include <map>
 #include <string>
 #include "GameEngine.h"
-#include "../CommandProcessing/CommandProcessing.h"
 #include "../Utils/GameUtils.h"
-#include <chrono>       // std::chrono::system_clock
+#include <chrono>
 #include <random>
 using namespace std;
 
@@ -203,7 +202,7 @@ string* GameEngine::addPlayer(std::string* playerName) {
     }
 
     // Create and add player
-    Player* player = new Player();
+    auto* player = new Player();
     player->setName(*playerName);
     players->push_back(player);
 

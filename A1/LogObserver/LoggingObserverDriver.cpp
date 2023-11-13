@@ -35,6 +35,5 @@ void testLoggingObserver()
 int main()
 {
     testLoggingObserver();
-
     return 0;
 };

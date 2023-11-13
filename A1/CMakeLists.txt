@@ -13,7 +13,7 @@ add_executable(a1_335_p5
     Map/Map.cpp
     Map/Map.h
 
-   Orders/OrdersDriver.cpp
+#   Orders/OrdersDriver.cpp
     Orders/Orders.cpp
     Orders/Orders.h
 
@@ -32,6 +32,10 @@ add_executable(a1_335_p5
     Utils/GameUtils.cpp
     Utils/GameUtils.h
 
-#    MainDriver.cpp
+        LogObserver/LoggingObserver.h
+        LogObserver/LoggingObserver.cpp
+        LogObserver/LoggingObserverDriver.cpp
+
+        #    MainDriver.cpp
 
 )
