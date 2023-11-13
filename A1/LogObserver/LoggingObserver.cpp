@@ -75,7 +75,6 @@ void LogObserver::Update(ILoggable* log)
 {
 	string* theString = log->stringToLog();
 	ofstream output;
-	std::cout << *theString;
 	output.open("gamelog.txt", std::ios_base::app);
 	output << *theString << endl;
 	output.close();
