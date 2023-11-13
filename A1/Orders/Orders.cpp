@@ -4,9 +4,12 @@
 #include <vector>
 #include "../Player/Player.h"
 #include "../Map/Map.h"
+#include "../Cards/Cards.h"
 #include <algorithm>
 using namespace std;
-
+class Player;
+class Territory;
+class Card;
 // Implementations for Order class
 Order::Order(){this->Name = new string("NoName"), this->OrderType = new string("Order");}  // Allocate memory for Name
 Order::Order(string* name){this->Name = name, this->OrderType = new string("Order");}  // Change parameter to string pointer
@@ -94,16 +97,16 @@ void AdvanceOrder::execute() {
     
     // Attackers Won
     if(remainingAttackers > 0){
-        cout << "Attack successful! " << issuingPlayer->name << " has captured " << destination->getName() << endl;
+        cout << "Attack successful! " << issuingPlayer->name << " has captured " << destination->territoryName << endl;
         destination->playerOwner->reinforcementPool -= *(destination->numArmies);
         *(destination->numArmies) = remainingAttackers;
-        destination->setPlayer(issuingPlayer);
+        destination->playerOwner = issuingPlayer;
         
         int randCardNumb = std::rand()%5;
         Card newCard(randCardNumb);
         issuingPlayer->card->push_back(&newCard);
     }else{
-        cout << "Attack failed! " << destination->getName() << " won against Attackers:  " << issuingPlayer->name  << endl;
+        cout << "Attack failed! " << destination->territoryName << " won against Attackers:  " << issuingPlayer->name  << endl;
     }
 
         
