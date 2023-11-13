@@ -30,9 +30,15 @@ string CommandProcessor::readCommand() {
     return command;
 }
 
+string* CommandProcessor::stringToLog()
+{
+    return new string("Added new command: " + *commands->back()->getCommand());
+}
+
 Command* CommandProcessor::saveCommand(string* command, string* effect) {
     auto* newCommand = new Command(command, effect);
     commands->push_back(newCommand);
+    Notify(this);
     return newCommand;
 }
 
@@ -80,9 +86,15 @@ Command::~Command() {
     delete effect;
 }
 
+string* Command::stringToLog()
+{
+    return new string("Command effect does: " + *effect);
+}
+
 // Methods
 Command* Command::saveEffect(string* effect) {
     this->effect = effect;
+    Notify(this);
     return this;
 }
 
