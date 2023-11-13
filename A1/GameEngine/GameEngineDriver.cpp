@@ -126,8 +126,8 @@ void testMainGameLoop() {
     std::vector<Player*> players;
 
     // Create players and territories
-    Player* player = new Player("Player 1", { territory1 });
-    Player* player2 = new Player("Player 2", { territory2 });
+    Player* player = new Player("Player 1",  territory1 );
+    Player* player2 = new Player("Player 2", territory2 );
 
 
     players.push_back(player);
