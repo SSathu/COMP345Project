@@ -4,6 +4,7 @@
 #include <vector>
 #include "../Map/Map.h"
 #include "../Cards/Cards.h"
+#include "../PlayerStrategies/PlayerStrategies.h"
 using namespace std;
 
 
@@ -27,23 +28,31 @@ public:
 	// Constuctors and Destructor
 	Player();
 	Player(string name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<PlayerOrder*> orderList);
+	Player(string name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<PlayerOrder*> orderList, PlayerStrategy* playerStrategy);
+
 	Player(Player &player);
+	Player(Player& player);
 	~Player();
+	PlayerStrategy* ps;
 
 	// assignment operator
 	Player& operator = (Player& player);
 	// stream insertion operator
 	friend ostream& operator << (ostream& os, Player& player);
 	// Show a list of territories to be defended
-	void toDefend();
+	vector<Territory*>* toDefend();
 	// Show a list of territories to be attacked
-	void toAttack();
+	vector<Territory*>* toAttack();
 	// Put orders in a list
 	void issueOrder();
+
+	void setStrategy(PlayerStrategy* strategy);
 	
 	string getName();
         void setName(string newName);
         Hand* hand;
+		Deck* deck;
+		void setDeck(Deck* d);
 		void setReinforcementPool(int reinforcementPool);
 
 		int getReinforcementPool();

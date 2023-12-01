@@ -148,9 +148,9 @@ void testMainGameLoop() {
         delete territory;
     }
 }
-int main(){
+/*int main() {
 testGameStates();
 testMainGameLoop();
 return 0;
-}
+}*/
 

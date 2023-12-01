@@ -301,6 +301,7 @@ string* GameEngine::gameStart() {
     cout << endl;
 
     for (int i = 0; i < players->size(); ++i) {
+        (*players)[i]->deck = deck;
         cout << "Player " << i + 1 << " drawing..." << endl;
         (*players)[i]->hand = new Hand();
         deck->draw((*players)[i]->hand);
