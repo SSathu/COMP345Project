@@ -40,6 +40,15 @@ void PlayerOrder::execute() {
 		this->card = card;
 		this->orderList = orderList;
 	}
+	// Parameterized constructor including playerStrategy
+	Player::Player(string name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<PlayerOrder*> orderList, PlayerStrategy* playerStrategy)
+	{
+		this->name = name;
+		this->territory = territory;
+		this->card = card;
+		this->orderList = orderList;
+		this->ps = playerStrategy;
+	}
 	// Copy constructor
 	Player::Player(Player& player) {
 		name = player.name;
@@ -100,23 +109,13 @@ void PlayerOrder::execute() {
 	}
 
 	// The method shows a list of territories to be defended
-	void Player::toDefend() {
-		cout << "Territories to be defended: " << endl;
-		for (Territory* s : *territory) {
-				cout << s->getName() << endl;
-		}
-		cout << endl;
-
+	vector<Territory*>* Player::toDefend() {
+		return ps->toDefend();
 	}
 
 	// the method shows a list of territories to be attacked
-	void Player::toAttack() {
-		cout << "Territories to be attacked: " << endl;
-		for (Territory* s : *territory) {
-				cout << s->getName() << endl;
-	
-		}
-		cout << endl;
+		vector<Territory*>* Player::toAttack() {
+			return ps->toAttack();
 
 	}
 
@@ -160,6 +159,11 @@ void PlayerOrder::execute() {
 	
 	}
 
+	void Player::setStrategy(PlayerStrategy* strategy)
+	{
+		this->ps = strategy;
+	}
+
 void Player::setName(std::string newName) {
         this->name = newName;
     }
@@ -169,6 +173,10 @@ void Player::setName(std::string newName) {
 
 	int Player::getReinforcementPool() {
 		return reinforcementPool;
+	}
+	void Player::setDeck(Deck* d)
+	{
+		this->deck = d;
 	}
 	void Player::setReinforcementPool(int reinforcementPool) {
 		this->reinforcementPool = reinforcementPool;
