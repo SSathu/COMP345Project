@@ -48,6 +48,7 @@ void PlayerOrder::execute() {
 		this->card = card;
 		this->orderList = orderList;
 		this->ps = playerStrategy;
+		ps->setPlayer(this);
 	}
 	// Copy constructor
 	Player::Player(Player& player) {
