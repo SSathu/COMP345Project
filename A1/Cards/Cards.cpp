@@ -69,6 +69,27 @@ Card::Card(Card* otherCard)
 };;
 
 
+string Card::getcardName()
+{
+
+
+	switch (cardType) //Match the given cardType to the order type that needs to be returned
+	{
+	case 0:
+		return "Bomb";
+	case 1:
+		return "Deploy";
+	case 2:
+		return "Blockade";
+	case 3:
+		return "Airlift";
+	case 4:
+		return "Negotiate";
+	default:
+		return NULL;
+	}
+}
+
 int* Card::getCardType()
 {
 	return &cardType;

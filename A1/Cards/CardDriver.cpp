@@ -55,7 +55,7 @@ void testCards()
 
 }
 
-int main(){
+/*int main() {
 testCards();
 return 0;
-}
+}*/

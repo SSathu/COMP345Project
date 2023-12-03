@@ -23,7 +23,8 @@ public:
     void copy(Order &obj);
 	void streamInsertion();
     string getName() const;
-
+    bool cheater = false;
+    void switchNeutralPlayer(Player* p);
     string* stringToLog();
     };
 

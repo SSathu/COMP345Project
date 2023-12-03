@@ -22,6 +22,7 @@ public:
 	Card(int cardType); //constructor
 	Card(Card* otherCard);
 	//Copy constructor
+	string getcardName();
 	int* getCardType(); //Getter function
 	Card& operator=(Card* otherCard); //Check if two cards have the same type
 	friend ostream& operator<<(ostream& os,Card* card); //outputs cardType

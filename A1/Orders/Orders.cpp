@@ -21,6 +21,15 @@ string Order::getName() const{
 }
 
 
+void Order::switchNeutralPlayer(Player* p)
+{
+    if ((p) &&*p->ps->neutral == true)
+    {
+        *p->ps->neutral = false;
+        p->ps = new AggressivePlayerStrategy();
+    }
+}
+
 string* Order::stringToLog()
 {
     return new string("Executed order type: " + *OrderType);
@@ -78,6 +87,28 @@ bool AdvanceOrder::validate(){
 
 void AdvanceOrder::execute() { 
     Order::execute();
+
+    switchNeutralPlayer(destination->playerOwner);
+
+    if (cheater)
+    {
+        Player* p = this->issuingPlayer;
+        Territory* attacking = this->destination;
+
+        if (!attacking->playerOwner == NULL)
+        {
+            Player* playerBeingAttacked = attacking->playerOwner;
+            auto it = std::find(playerBeingAttacked->territory->begin(), playerBeingAttacked->territory->end(), attacking);
+
+            if (it != playerBeingAttacked->territory->end())
+            {
+                playerBeingAttacked->territory->erase(it);
+            }
+        }
+        p->territory->push_back(attacking);
+        std::cout << "Cheater captured territory " << attacking->getName();
+        return;
+    }
 
     // both territories from issuing player
     if(start->playerOwner == issuingPlayer && destination ->playerOwner == issuingPlayer){
@@ -152,7 +183,7 @@ bool BombOrder::validate(){
 void BombOrder::execute() {
     if(this->validate()){
         Order::execute();
-
+        switchNeutralPlayer(this->attackedTerritory->playerOwner);
         if (attackedTerritory != nullptr && attackedTerritory->numArmies != nullptr) {
                 *(attackedTerritory->numArmies) /= 2;
         }
