@@ -57,7 +57,6 @@ class GameEngine : public Subject, ILoggable {
         void issueOrderPhase();
         bool executeOrdersPhase();
         void mainGameLoop(GameEngine* game);
-        void mainGameLoop(GameEngine* game, int turns);
 
         string* stringToLog();
 

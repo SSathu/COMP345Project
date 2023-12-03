@@ -30,6 +30,8 @@ class Territory
 		std::vector<Territory*>* neighbors;
 		int* numArmies;
 		bool* visited;
+		bool* visited2;
+		int distance;
 
 		int getXCoord() const;
 		int getYCoord() const;

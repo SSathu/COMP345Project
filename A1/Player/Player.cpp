@@ -34,14 +34,14 @@ void PlayerOrder::execute() {
 	}
 
 	// Parameterized constructor
-	Player::Player(string  name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<PlayerOrder*> orderList) {
+	Player::Player(string  name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<Order*>* orderList) {
 		this->name = name;
 		this->territory = territory;
 		this->card = card;
 		this->orderList = orderList;
 	}
 	// Parameterized constructor including playerStrategy
-	Player::Player(string name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<PlayerOrder*> orderList, PlayerStrategy* playerStrategy)
+	Player::Player(string name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<Order*>* orderList, PlayerStrategy* playerStrategy)
 	{
 		this->name = name;
 		this->territory = territory;
@@ -64,10 +64,10 @@ void PlayerOrder::execute() {
 		name.clear();
 		territory->clear();
 		card->clear();
-	for (PlayerOrder* order : orderList) {
+	for (Order* order : *orderList) {
 				delete order;
 		}
-	orderList.clear();
+	orderList->clear();
 	}
 
 	// assignment operator
@@ -77,13 +77,13 @@ void PlayerOrder::execute() {
 			territory = player.territory;
 			card = player.card;
 
-			for (PlayerOrder* order : orderList) {
+			for (Order* order : *orderList) {
 				delete order;
 			}
-			orderList.clear();
+			orderList->clear();
 
-			for (PlayerOrder* order : player.orderList) {
-				orderList.push_back(new PlayerOrder(*order));
+			for (Order* order : *player.orderList) {
+				orderList->push_back(new Order(*order));
 			}
 		}
 		return *this;
@@ -103,8 +103,8 @@ void PlayerOrder::execute() {
 		}
 		os << endl;
 		os << "List of orders: " << endl;
-		for (PlayerOrder* order : player.orderList) {
-			os << "-" << order->getOrder() << endl;
+		for (Order* order : *player.orderList) {
+			os << "-" << order << endl;
 		}
 		return os;
 	}
@@ -122,47 +122,13 @@ void PlayerOrder::execute() {
 
 	// The method puts the orders into a list of orders
 	void Player::issueOrder() {
-		// to defend
-		toDefend();
-		cout << "Issuing deploy orders:" << endl;
-		for (Territory* t : *territory) {
-			if (reinforcementPool > 0) {
-				cout << "Deploying units to " << t->getName() << endl;
-				orderList.push_back(new PlayerOrder("Deploy to " + t->getName()));
-				reinforcementPool--;
-			}
-		}
-		cout << endl; 
-	
-		// to attack
-		if (reinforcementPool == 0) {
-			toAttack();
-			cout << "Issuing advance orders:" << endl;
-			for (Territory* t : *territory) {
-
-				if (reinforcementPool > 0) {
-					cout << "Moving units to defend " << t->getName() << endl;
-					orderList.push_back(new PlayerOrder("Defend " + t->getName()));
-					reinforcementPool--;
-				}
-			}
-			cout << endl;
-
-			if (!card->empty()) {
-				cout << "Using card: " << card->back() << endl;
-				orderList.push_back(new PlayerOrder(*(card->back())));
-				//  remove the used card from the hand
-				card->pop_back(); 
-			}
-			cout << endl;
-
-		}
-	
+		ps->issueOrder();
 	}
 
 	void Player::setStrategy(PlayerStrategy* strategy)
 	{
 		this->ps = strategy;
+		ps->setPlayer(this);
 	}
 
 void Player::setName(std::string newName) {
@@ -184,12 +150,12 @@ void Player::setName(std::string newName) {
 	}
 
 	void Player::executeTopOrder() {
-		if (orderList.empty()) {
-			PlayerOrder* topOrder = orderList.front();
+		if (orderList->empty()) {
+			Order* topOrder = orderList->front();
 			topOrder->execute();
 
 			// Clean up the executed order
 			delete topOrder;
-			orderList.erase(orderList.begin());
+			orderList->erase(orderList->begin());
 		}
 	}

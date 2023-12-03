@@ -397,14 +397,3 @@ void GameEngine::mainGameLoop(GameEngine *game) {
         else break;
     }
 }
-//TODO: edit the main game loop to do something AFTER the for loop ends, finding some way to decide a winner
-void GameEngine::mainGameLoop(GameEngine *game, int turns) {
-    for (int i = 0; i < turns; ++i) {
-        if (game->players->size() > 1) {
-            reinforcementPhase();
-            issueOrderPhase();
-            executeOrdersPhase();
-        }
-        else break;
-    }
-}
