@@ -13,7 +13,7 @@ void testGameStates() {
     // Loop asking the user to prompt a transition until they exit the program
     while (true) {
         // Checks if the game is ended
-        if(*gameEngine.getCurrentState() == State::END){
+        if (*gameEngine.getCurrentState() == State::END) {
             std::cout << "Thank you for playing!" << std::endl;
             break;
         }
@@ -23,14 +23,14 @@ void testGameStates() {
         std::cin >> input;
 
         // Exits the program if the user enters 'exit'
-        if(input == "exit") break;
+        if (input == "exit") break;
 
         // Calls game logic to handle the input and trigger a transition if it is valid
         gameEngine.processInput(input);
     }
 }
 
-void testStartupPhase(){
+void testStartupPhase() {
     // Instance of GameEngine
     GameEngine gameEngine;
     gameEngine.gameEngineMap = 0;
@@ -41,19 +41,19 @@ void testStartupPhase(){
     while (true) {
         cout << endl;
         std::cout << "Enter \"loadmap\", \"validatemap\", "
-                     "\"addplayer\", or \"gamestart\" to run the commands."
-                     " Enter \"exit\" if you want to quit out." << std::endl;
+            "\"addplayer\", or \"gamestart\" to run the commands."
+            " Enter \"exit\" if you want to quit out." << std::endl;
         std::cin >> input;
-        if(input == "exit") break;
+        if (input == "exit") break;
 
         //Reuse most of the functionality of the MapDriver, as this has already been done.
-        else if (input == "loadmap"){
+        else if (input == "loadmap") {
             std::cout << "Please select which map you would like to load:" << std::endl;
             std::string directory_path = "../Map/MapFiles";
             std::vector<std::string> files;
 
-            DIR *dir;
-            struct dirent *ent;
+            DIR* dir;
+            struct dirent* ent;
             if ((dir = opendir(directory_path.c_str())) != NULL) {
                 while ((ent = readdir(dir)) != NULL) {
                     if (ent->d_type == DT_REG) {
@@ -76,8 +76,8 @@ void testStartupPhase(){
         }
 
         //Similarly here, I can reuse assignment 1's driver
-        else if (input == "validatemap"){
-            if (gameEngine.gameEngineMap == 0){
+        else if (input == "validatemap") {
+            if (gameEngine.gameEngineMap == 0) {
                 std::cout << "The map hasn't been created yet!" << std::endl;
             }
             else {
@@ -85,8 +85,8 @@ void testStartupPhase(){
             }
         }
 
-        else if (input == "addplayer"){
-            if (gameEngine.players.size() == 6){
+        else if (input == "addplayer") {
+            if (gameEngine.players.size() == 6) {
                 std::cout << "Max players achieved already!" << std::endl;
             }
             else {
@@ -96,11 +96,11 @@ void testStartupPhase(){
             }
         }
 
-        else if (input == "gamestart"){
-            if (gameEngine.gameEngineMap == 0){
+        else if (input == "gamestart") {
+            if (gameEngine.gameEngineMap == 0) {
                 std::cout << "The map hasn't been created yet!" << std::endl;
             }
-            else if (gameEngine.players.size() < 2){
+            else if (gameEngine.players.size() < 2) {
                 std::cout << "Not enough players have been assigned yet!" << std::endl;
             }
             else {
@@ -109,7 +109,7 @@ void testStartupPhase(){
         }
 
         //simply quit out if the input was not recognized
-        else{
+        else {
             std::cout << "Unrecognized input detected. Please try again." << std::endl;
         }
     }
@@ -126,8 +126,8 @@ void testMainGameLoop() {
     std::vector<Player*> players;
 
     // Create players and territories
-    Player* player = new Player("Player 1",  territory1 );
-    Player* player2 = new Player("Player 2", territory2 );
+    Player* player = new Player("Player 1", territory1);
+    Player* player2 = new Player("Player 2", territory2);
 
 
     players.push_back(player);
@@ -153,4 +153,3 @@ testGameStates();
 testMainGameLoop();
 return 0;
 }*/
-
