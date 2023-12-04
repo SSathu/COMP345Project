@@ -386,7 +386,7 @@ bool GameEngine::executeOrdersPhase() {
         }
         else ++iterator;
     }
-    //TODO: change return variable or change the return type of the function
+
     return true;
 }
 
