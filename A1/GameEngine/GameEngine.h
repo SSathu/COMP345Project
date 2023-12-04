@@ -87,7 +87,6 @@ public:
     int nbTurns;
     bool isRunning;
 
-
     void reinforcementPhase();
     void issueOrderPhase();
     bool executeOrdersPhase();

@@ -28,14 +28,18 @@ add_executable(MainDriver
 #   CommandProcessing/CommandProcessingDriver.cpp
     CommandProcessing/CommandProcessing.cpp
     CommandProcessing/CommandProcessing.h
+    CommandProcessing/TournamentDriver.cpp
 
     Utils/GameUtils.cpp
     Utils/GameUtils.h
 
-        LogObserver/LoggingObserver.h
-        LogObserver/LoggingObserver.cpp
-#  LogObserver/LoggingObserverDriver.cpp
+    LogObserver/LoggingObserver.h
+    LogObserver/LoggingObserver.cpp
+#   LogObserver/LoggingObserverDriver.cpp
 
-        MainDriver.cpp
+#    MainDriver.cpp
 
- "PlayerStrategies/PlayerStrategies.cpp" "PlayerStrategies/PlayerStrategies.h")
+     PlayerStrategies/PlayerStrategies.cpp
+     PlayerStrategies/PlayerStrategies.h
+
+)

@@ -23,6 +23,15 @@ ostream &operator<<(ostream &out, const TournamentController &g) {
     return out;
 }
 
+TournamentController::TournamentController(vector<Map *> maps, vector<std::string> playerStrategies, int gameCount,
+                                           int turnCount, GameEngine *engine) {
+    this->maps = maps;
+    this->playerStrategies = playerStrategies;
+    this->gameCount = gameCount;
+    this->turnCount = turnCount;
+    this->engine = engine;
+}
+
 
 // Function to initialize the stateTransition map
 void initializeStateTransition(std::map<State, std::map<std::string, State>>* stateTransitions) {
@@ -199,6 +208,8 @@ void GameEngine::createTournament(vector<string> inputTokens) {
         index++;
     }
 
+    cout << "index: " << index << endl;
+
     // skip -G
     index++;
 
@@ -207,8 +218,11 @@ void GameEngine::createTournament(vector<string> inputTokens) {
 
     // skip -D
     index++;
+    index++;
 
     int turnCount = stoi(inputTokens.at(index));
+
+
 
     TournamentController* tournamentController = new TournamentController(mapFiles, playerStrategies, gameCount, turnCount, this);
     this->tournamentController = tournamentController;

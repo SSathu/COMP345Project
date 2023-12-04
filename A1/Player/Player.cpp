@@ -32,37 +32,40 @@ void PlayerOrder::execute() {
 		hand = new Hand();
 		deck = new Deck();
 		reinforcementPool = 0;
-
-
-		
-			
 	}
 
 	// Parameterized constructor
-	Player::Player(string  name, std::vector<Territory*>* territory, Hand* hand, vector<Order*>* orderList) {
-		this->name = name;
-		this->territory = territory;
-		this->hand = hand;
-		this->orderList = orderList;
-	}
+    Player::Player(string name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<Order*>* orderList)
+    {
+    // TODO: Check if the constructor is correctly implemented
+        this->name = name;
+        this->territory = territory;
+        this->hand = new Hand();
+        this->orderList = orderList;
+        this->deck = new Deck();
+        this->reinforcementPool = 0;
+    }
 	// Parameterized constructor including playerStrategy
-	Player::Player(string name, std::vector<Territory*>* territory, Hand* hand, vector<Order*>* orderList, PlayerStrategy* playerStrategy)
-	{
-		this->name = name;
-		this->territory = territory;
-		this->hand = hand;
-		this->orderList = orderList;
-		this->ps = playerStrategy;
-		ps->setPlayer(this);
-	}
+	Player::Player(std::string name, std::vector<Territory *> *territory, std::vector<Card *> *card,
+                   vector<Order *> *orderList, PlayerStrategy *playerStrategy) {
+    // TODO: Check if the constructor is correctly implemented
+        this->name = name;
+        this->territory = territory;
+        this->hand = new Hand();
+        this->orderList = orderList;
+        this->deck = new Deck();
+        this->reinforcementPool = 0;
+        this->ps = playerStrategy;
+        ps->setPlayer(this);
+    }
 	// Copy constructor
 	Player::Player(Player& player) {
+
 		name = player.name;
 		territory = player.territory;
 		hand = player.hand;
 		deck = player.deck;
 		orderList = player.orderList;
-
 	}
 	
 	// Destructor

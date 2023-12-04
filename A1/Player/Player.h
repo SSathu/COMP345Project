@@ -49,16 +49,16 @@ public:
 	void setStrategy(PlayerStrategy* strategy);
 	
 	string getName();
-        void setName(string newName);
-        Hand* hand;
-		Deck* deck;
-		void setDeck(Deck* d);
-		void setReinforcementPool(int reinforcementPool);
+    void setName(string newName);
+    Hand* hand;
+    Deck* deck;
+    void setDeck(Deck* d);
+    void setReinforcementPool(int reinforcementPool);
 
-		int getReinforcementPool();
+    int getReinforcementPool();
 
-		void executeTopOrder();
-		
+    void executeTopOrder();
+
 public:
 	// Store name of a player
 	string name;
