@@ -143,7 +143,7 @@ void AdvanceOrder::execute() {
         
         int randCardNumb = std::rand()%5;
         Card newCard(randCardNumb);
-        issuingPlayer->card->push_back(&newCard);
+        issuingPlayer->hand->handCards->push_back(&newCard);
     }else{
         cout << "Attack failed! " << destination->getName() << " won against Attackers:  " << issuingPlayer->name  << endl;
     }

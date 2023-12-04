@@ -27,11 +27,10 @@ class Player {
 public:
 	// Constuctors and Destructor
 	Player();
-	Player(string name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<Order*>* orderList);
-	Player(string name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<Order*>* orderList, PlayerStrategy* playerStrategy);
+	Player(string name, std::vector<Territory*>* territory, Hand* hand, vector<Order*>* orderList);
+	Player(string name, std::vector<Territory*>* territory, Hand* hand, vector<Order*>* orderList, PlayerStrategy* playerStrategy);
 
 	Player(Player &player);
-	
 	~Player();
 	PlayerStrategy* ps;
 
@@ -65,10 +64,10 @@ public:
 	// Store territories
 	std::vector<Territory*>* territory;
 	// Store cards
-	std::vector<Card*>* card;
 	// Store a list of orders
 	vector<Order*>* orderList;
 	static Player* NeutralPlayer;
 	std::vector<Player*>* negotiating;
 	int reinforcementPool;
 };
+
