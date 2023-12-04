@@ -82,19 +82,12 @@ public:
 
     void startupPhase();
 
-        Map* gameEngineMap;
-        vector<Player*>* players;
-        int nbTurns;
-        bool isRunning;
-
-
-        void reinforcementPhase();
-        void issueOrderPhase();
-        bool executeOrdersPhase();
-        void mainGameLoop(GameEngine* game);
-        void mainGameLoop(GameEngine* game, int turns);
     Map* gameEngineMap;
     vector<Player*>* players;
+    int nbTurns;
+    bool isRunning;
+
+
     void reinforcementPhase();
     void issueOrderPhase();
     bool executeOrdersPhase();
@@ -120,11 +113,11 @@ private:
     string* addPlayer(string* playerName);
     string* gameStart();
 
-        // Tournament Variables
-        TournamentController *tournamentController;
+    // Tournament Variables
+    TournamentController *tournamentController;
 
-        // Tournament mode methods
-        void createTournament(vector<string> inputTokens);
+    // Tournament mode methods
+    void createTournament(vector<string> inputTokens);
 
 };
 

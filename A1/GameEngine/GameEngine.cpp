@@ -150,9 +150,6 @@ void GameEngine::startupPhase() {
         createTournament(inputTokens);
         return;
     }
-    else{
-        if (fileCommandProcessor->getFileLineReader()->getLines()->empty()) startupPhase();
-    }
     else {
         cout << "Invalid command. Please try again." << endl;
         startupPhase();
@@ -423,7 +420,7 @@ void GameEngine::issueOrderPhase() {
         Player* currentPlayer = (*players)[index];
 
 
-        if (!currentPlayer->orderList.empty()) {
+        if (!currentPlayer->orderList->empty()) {
             currentPlayer->issueOrder();
         }
         // Move to the next player in a round-robin fashion
@@ -439,7 +436,7 @@ bool GameEngine::executeOrdersPhase() {
 
         for (Player* player : *players) {
 
-            if (!player->orderList.empty()) {
+            if (!player->orderList->empty()) {
                 player->executeTopOrder();
                 continueGame = true;
             }
