@@ -12,7 +12,8 @@ Order::Order(){this->Name = new string("NoName"), this->OrderType = new string("
 Order::Order(string* name){this->Name = name, this->OrderType = new string("Order");}  // Change parameter to string pointer
 Order::Order(const Order &obj){this->Name = new string(*(obj.Name)), this->OrderType = new string("Order");;}  // Allocate memory for Name
 bool Order::validate(){ return false; }
-void Order::execute() {
+void Order::execute()
+{
     Notify(this);
 }
 void Order::copy(Order &obj){this->Name = new string(*(obj.Name)), this->OrderType = new string("Order");;}  // Allocate memory for Name
@@ -106,7 +107,6 @@ void AdvanceOrder::execute() {
             }
         }
         p->territory->push_back(attacking);
-        std::cout << "Cheater captured territory " << attacking->getName();
         return;
     }
 
@@ -143,7 +143,7 @@ void AdvanceOrder::execute() {
         
         int randCardNumb = std::rand()%5;
         Card newCard(randCardNumb);
-        issuingPlayer->card->push_back(&newCard);
+        issuingPlayer->hand->handCards->push_back(&newCard);
     }else{
         cout << "Attack failed! " << destination->getName() << " won against Attackers:  " << issuingPlayer->name  << endl;
     }

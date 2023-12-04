@@ -28,24 +28,29 @@ void PlayerOrder::execute() {
 		name = "";
 		territory = new vector<Territory*>;
         negotiating = new vector<Player*>;
-		card = {};
-		orderList = {};
+		orderList = new vector<Order*>;
+		hand = new Hand();
+		deck = new Deck();
 		reinforcementPool = 0;
+
+
+		
+			
 	}
 
 	// Parameterized constructor
-	Player::Player(string  name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<Order*>* orderList) {
+	Player::Player(string  name, std::vector<Territory*>* territory, Hand* hand, vector<Order*>* orderList) {
 		this->name = name;
 		this->territory = territory;
-		this->card = card;
+		this->hand = hand;
 		this->orderList = orderList;
 	}
 	// Parameterized constructor including playerStrategy
-	Player::Player(string name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<Order*>* orderList, PlayerStrategy* playerStrategy)
+	Player::Player(string name, std::vector<Territory*>* territory, Hand* hand, vector<Order*>* orderList, PlayerStrategy* playerStrategy)
 	{
 		this->name = name;
 		this->territory = territory;
-		this->card = card;
+		this->hand = hand;
 		this->orderList = orderList;
 		this->ps = playerStrategy;
 		ps->setPlayer(this);
@@ -54,7 +59,8 @@ void PlayerOrder::execute() {
 	Player::Player(Player& player) {
 		name = player.name;
 		territory = player.territory;
-		card = player.card;
+		hand = player.hand;
+		deck = player.deck;
 		orderList = player.orderList;
 
 	}
@@ -63,7 +69,7 @@ void PlayerOrder::execute() {
 	Player::~Player() {
 		name.clear();
 		territory->clear();
-		card->clear();
+		hand->~Hand();
 	for (Order* order : *orderList) {
 				delete order;
 		}
@@ -75,7 +81,7 @@ void PlayerOrder::execute() {
 		if (this != &player) {
 			name = player.name;
 			territory = player.territory;
-			card = player.card;
+			hand = player.hand;
 
 			for (Order* order : *orderList) {
 				delete order;
@@ -98,9 +104,7 @@ void PlayerOrder::execute() {
 		}
 		os << endl;
 		os << "Cards: " << endl;
-		for (Card* s2 : *(player.card)) {
-			os << "-" << s2 << endl;
-		}
+		
 		os << endl;
 		os << "List of orders: " << endl;
 		for (Order* order : *player.orderList) {
@@ -150,12 +154,11 @@ void Player::setName(std::string newName) {
 	}
 
 	void Player::executeTopOrder() {
-		if (orderList->empty()) {
+		if (!orderList->empty()) {
 			Order* topOrder = orderList->front();
-			topOrder->execute();
-
+			orderList->front()->execute();
 			// Clean up the executed order
-			delete topOrder;
+			delete orderList->front();
 			orderList->erase(orderList->begin());
 		}
 	}

@@ -65,10 +65,10 @@ public:
 	// Store territories
 	std::vector<Territory*>* territory;
 	// Store cards
-	std::vector<Card*>* card;
 	// Store a list of orders
 	vector<Order*>* orderList;
 	static Player* NeutralPlayer;
 	std::vector<Player*>* negotiating;
 	int reinforcementPool;
 };
+

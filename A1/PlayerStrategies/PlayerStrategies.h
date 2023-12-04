@@ -1,12 +1,15 @@
 #pragma once
-#include "../Player/Player.h"
+#include <vector>
 
-
+using std::vector;
+class Player;
+class Territory;
 
 class PlayerStrategy {
 public:
 	Player* p;
-	bool* neutral;
+	bool* neutral = new bool(false);
+	~PlayerStrategy() { delete neutral; neutral = nullptr; }
 	void setPlayer(Player* player) { this->p = player; };
 	virtual void issueOrder() = 0;
 	virtual vector<Territory*>* toAttack() = 0;
