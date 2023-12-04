@@ -7,6 +7,23 @@
 #include <random>
 using namespace std;
 
+// TournamentController methods
+ostream &operator<<(ostream &out, const TournamentController &g) {
+    out << "TournamentController: " << endl;
+    // Print size of maps
+    out << "Map Count: " << g.maps.size() << endl;
+
+    out << "Player Strategies: " << endl;
+    for (auto & playerStrategy : g.playerStrategies) {
+        out << playerStrategy << endl;
+    }
+
+    out << "Game Count: " << g.gameCount << endl;
+    out << "Turn Count: " << g.turnCount << endl;
+    return out;
+}
+
+
 // Function to initialize the stateTransition map
 void initializeStateTransition(std::map<State, std::map<std::string, State>>* stateTransitions){
     (*stateTransitions)[State::START]["loadmap"] = State::MAP_LOADED;
@@ -128,10 +145,16 @@ void GameEngine::startupPhase() {
         auto* fileCommandProcessor = dynamic_cast<FileCommandProcessorAdapter*>(commandProcessor);
         fileCommandProcessor->getFileLineReader()->readLineFromFile(inputTokens.at(1));
         if(fileCommandProcessor->getFileLineReader()->getLines()->empty()) startupPhase();
-    }else{
+    }
+    else if(firstArgument == "-tournament"){
+        createTournament(inputTokens);
+        return;
+    }
+    else{
         cout << "Invalid command. Please try again." << endl;
         startupPhase();
     }
+
 
     // While the currentState is not ASSIGN_REINFORCEMENTS
     while(*currentState != State::ASSIGN_REINFORCEMENTS){
@@ -143,6 +166,57 @@ void GameEngine::startupPhase() {
     // Print all commands
     cout << endl << "Printing entered commands..." << endl;
     cout << *commandProcessor;
+}
+
+void GameEngine::createTournament(vector<string> inputTokens) {
+    int maxTokens = inputTokens.size();
+    // Index = 1 since we have already processed -tournament
+    int index = 2;
+
+    // tournament -M <listofmapfiles> -P <listofplayerstrategies> -G <numberofgames> -D <maxnumberofturns>
+    // -M <listofmapfiles>
+    vector<Map*> mapFiles;
+    MapLoader mapDriver = MapLoader();
+    while (index < maxTokens && inputTokens.at(index) != "-P") {
+        Map* map = new Map();
+        bool isMapCreated = mapDriver.createMapFromFile(inputTokens.at(index), map);
+        if(isMapCreated && map->validate()){
+            mapFiles.push_back(map);
+        }
+        else{
+            cout << "Map " << inputTokens.at(index) << " is invalid. Please try again." << endl;
+            createTournament(inputTokens);
+        }
+        index++;
+    }
+
+    // skip -P
+    index++;
+
+    // -P <listofplayerstrategies>
+    vector<string> playerStrategies;
+    while (index < maxTokens && inputTokens.at(index) != "-G") {
+        playerStrategies.push_back(inputTokens.at(index));
+        index++;
+    }
+
+    // skip -G
+    index++;
+
+    // -G <numberofgames>
+    int gameCount = stoi(inputTokens.at(index));
+
+    // skip -D
+    index++;
+
+    int turnCount = stoi(inputTokens.at(index));
+
+    TournamentController* tournamentController = new TournamentController(mapFiles, playerStrategies, gameCount, turnCount, this);
+    this->tournamentController = tournamentController;
+
+    cout << *tournamentController << endl;
+
+
 }
 
 string* GameEngine::executeCommand(Command* command) {

@@ -31,7 +31,6 @@ public:
 	Player(string name, std::vector<Territory*>* territory, std::vector<Card*>* card, vector<PlayerOrder*> orderList, PlayerStrategy* playerStrategy);
 
 	Player(Player &player);
-	Player(Player& player);
 	~Player();
 	PlayerStrategy* ps;
 

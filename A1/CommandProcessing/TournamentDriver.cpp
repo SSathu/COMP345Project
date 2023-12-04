@@ -1,7 +1,3 @@
-//
-// Created by kiran on 11/28/2023.
-//
-
 //imports
 #include <iostream>
 #include "../GameEngine/GameEngine.h"
@@ -14,6 +10,12 @@ void testTournament();
 int main(){
     testTournament();
     return 0;
+}
+
+void testTournament2() {
+    GameEngine gameEngine;
+
+    gameEngine.startupPhase();
 }
 
 void testTournament() {

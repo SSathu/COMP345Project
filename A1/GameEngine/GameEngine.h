@@ -34,6 +34,37 @@ static const std::string stateStrings[] = {
     "End"
 };
 
+class GameEngine;
+
+class TournamentController {
+public:
+    TournamentController(vector<Map*> maps, vector<string> playerStrategies, int gameCount, int turnCount, GameEngine* engine);
+    TournamentController(const TournamentController& th); //copy constructor
+    TournamentController& operator =(const TournamentController&); //assignment operator
+    ~TournamentController(); //destructor
+
+    friend ostream& operator << (ostream& out, const TournamentController& g);
+private:
+    vector<Map*> maps;
+    vector<string> playerStrategies;
+    int gameCount;
+    int turnCount;
+    vector<vector<string>> results;
+    GameEngine* engine;
+    int currentMapIdx;
+    int currentGame;
+
+    void execute();
+    void loadMap(int);
+    void addPlayers();
+    bool canPlayTurn();
+    void printResults();
+
+
+    friend class GameEngine;
+
+};
+
 class GameEngine : public Subject, ILoggable {
     public:
         GameEngine(); // Constructor
@@ -53,6 +84,10 @@ class GameEngine : public Subject, ILoggable {
 
         Map* gameEngineMap;
         vector<Player*>* players;
+        int nbTurns;
+        bool isRunning;
+
+
         void reinforcementPhase();
         void issueOrderPhase();
         bool executeOrdersPhase();
@@ -78,5 +113,10 @@ class GameEngine : public Subject, ILoggable {
         string* addPlayer(string* playerName);
         string* gameStart();
 
-};
+        // Tournament Variables
+        TournamentController *tournamentController;
 
+        // Tournament mode methods
+        void createTournament(vector<string> inputTokens);
+
+};
