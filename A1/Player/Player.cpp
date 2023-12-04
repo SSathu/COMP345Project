@@ -156,9 +156,9 @@ void Player::setName(std::string newName) {
 	void Player::executeTopOrder() {
 		if (!orderList->empty()) {
 			Order* topOrder = orderList->front();
-			topOrder->execute();
+			orderList->front()->execute();
 			// Clean up the executed order
-			delete topOrder;
+			delete orderList->front();
 			orderList->erase(orderList->begin());
 		}
 	}

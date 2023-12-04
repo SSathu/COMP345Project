@@ -19,7 +19,7 @@ public:
     string* Name;
     string* OrderType;
     bool validate();
-    void execute();
+    virtual void execute();
     void copy(Order &obj);
 	void streamInsertion();
     string getName() const;
