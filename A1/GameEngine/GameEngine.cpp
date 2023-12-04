@@ -25,7 +25,7 @@ ostream &operator<<(ostream &out, const TournamentController &g) {
 
 
 // Function to initialize the stateTransition map
-void initializeStateTransition(std::map<State, std::map<std::string, State>>* stateTransitions){
+void initializeStateTransition(std::map<State, std::map<std::string, State>>* stateTransitions) {
     (*stateTransitions)[State::START]["loadmap"] = State::MAP_LOADED;
     (*stateTransitions)[State::MAP_LOADED]["loadmap"] = State::MAP_LOADED;
     (*stateTransitions)[State::MAP_LOADED]["validatemap"] = State::MAP_VALIDATED;
@@ -51,7 +51,7 @@ GameEngine::GameEngine() : currentState(new State(State::START)) {
     initializeStateTransition(stateTransitions);
 }
 
-GameEngine::GameEngine(State *initialState) : currentState(initialState){
+GameEngine::GameEngine(State* initialState) : currentState(initialState) {
     stateTransitions = new std::map<State, std::map<std::string, State>>();
     players = new vector<Player*>();
     initializeStateTransition(stateTransitions);
@@ -109,12 +109,12 @@ void GameEngine::processInput(const std::string& input) {
     }
 }
 
-bool GameEngine::validateInput(const std::string &input) {
+bool GameEngine::validateInput(const std::string& input) {
     return (*stateTransitions)[*currentState].find(input) != (*stateTransitions)[*currentState].end();
 }
 
 // Stream insertion operator, returning the game's state
-std::ostream &operator<<(std::ostream &os, const GameEngine &engine) {
+std::ostream& operator<<(std::ostream& os, const GameEngine& engine) {
     os << "Game's current state: " << GameEngine::stateToString(*engine.currentState);
     return os;
 }
@@ -135,11 +135,11 @@ void GameEngine::startupPhase() {
     std::vector<std::string> inputTokens = splitString(input);
     std::string firstArgument = inputTokens.at(0);
 
-    if(firstArgument == "-console"){
+    if (firstArgument == "-console") {
         commandProcessor = new CommandProcessor();
         cout << "Chose to input commands via console..." << endl;
     }
-    else if(firstArgument == "-file"){
+    else if (firstArgument == "-file") {
         commandProcessor = new FileCommandProcessorAdapter();
         // Downcast commandProcessor to FileCommandProcessorAdapter to call readLineFromFile
         auto* fileCommandProcessor = dynamic_cast<FileCommandProcessorAdapter*>(commandProcessor);
@@ -151,13 +151,15 @@ void GameEngine::startupPhase() {
         return;
     }
     else{
+        if (fileCommandProcessor->getFileLineReader()->getLines()->empty()) startupPhase();
+    }
+    else {
         cout << "Invalid command. Please try again." << endl;
         startupPhase();
     }
 
-
     // While the currentState is not ASSIGN_REINFORCEMENTS
-    while(*currentState != State::ASSIGN_REINFORCEMENTS){
+    while (*currentState != State::ASSIGN_REINFORCEMENTS) {
         Command* command = commandProcessor->getCommand(*this);
         string* effect = executeCommand(command);
         command->saveEffect(effect);
@@ -269,7 +271,7 @@ string* GameEngine::addPlayer(std::string* playerName) {
     string* effect;
     cout << "Current Players: " << players->size() << endl;
 
-    if(players->size() >= 6) {
+    if (players->size() >= 6) {
         cout << "Limit players reached (Max: 6)." << endl;
         effect = new string("Failed. Exceeded the maximum number of players (Max: 6).");
         return effect;
@@ -286,7 +288,7 @@ string* GameEngine::addPlayer(std::string* playerName) {
 
     // Print players
     cout << "Current Players: " << endl;
-    for (auto & p : *players) {
+    for (auto& p : *players) {
         cout << " - " << p->getName() << " " << endl;
     }
     cout << endl;
@@ -331,7 +333,7 @@ string* GameEngine::gameStart() {
 
     std::shuffle(players->begin(), players->end(), std::default_random_engine(seed));
 
-    for (auto & player : *players) {
+    for (auto& player : *players) {
         cout << " - " << player->getName() << endl;
     }
     cout << endl;
@@ -380,7 +382,7 @@ string* GameEngine::gameStart() {
         (*players)[i]->hand = new Hand();
         deck->draw((*players)[i]->hand);
         deck->draw((*players)[i]->hand);
-        cout << "Cards in " << (*players)[i]->getName() << "'s Hand: \n" ;
+        cout << "Cards in " << (*players)[i]->getName() << "'s Hand: \n";
         cout << (*players)[i]->hand;
     }
     cout << endl;
@@ -416,7 +418,7 @@ void GameEngine::reinforcementPhase() {
 
 void GameEngine::issueOrderPhase() {
     int index = 0;
-    for(int i = 0; i < players->size(); ++i){
+    for (int i = 0; i < players->size(); ++i) {
 
         Player* currentPlayer = (*players)[index];
 
@@ -457,11 +459,11 @@ bool GameEngine::executeOrdersPhase() {
         }
         else ++iterator;
     }
-    //TODO: change return variable or change the return type of the function
+
     return true;
 }
 
-void GameEngine::mainGameLoop(GameEngine *game) {
+void GameEngine::mainGameLoop(GameEngine* game) {
     while (true) {
         if (game->players->size() > 1) {
             reinforcementPhase();
@@ -471,8 +473,8 @@ void GameEngine::mainGameLoop(GameEngine *game) {
         else break;
     }
 }
-//TODO: edit the main game loop to do something AFTER the for loop ends, finding some way to decide a winner
-void GameEngine::mainGameLoop(GameEngine *game, int turns) {
+
+void GameEngine::mainGameLoop(GameEngine* game, int turns) {
     for (int i = 0; i < turns; ++i) {
         if (game->players->size() > 1) {
             reinforcementPhase();

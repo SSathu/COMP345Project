@@ -3,7 +3,7 @@ project(a1_335_p5)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(a1_335_p5
+add_executable(MainDriver
 
 #   GameEngine/GameEngineDriver.cpp
     GameEngine/GameEngine.h
@@ -29,19 +29,13 @@ add_executable(a1_335_p5
     CommandProcessing/CommandProcessing.cpp
     CommandProcessing/CommandProcessing.h
 
-    CommandProcessing/TournamentDriver.cpp
-
     Utils/GameUtils.cpp
     Utils/GameUtils.h
 
         LogObserver/LoggingObserver.h
         LogObserver/LoggingObserver.cpp
-#        LogObserver/LoggingObserverDriver.cpp
+#  LogObserver/LoggingObserverDriver.cpp
 
-        PlayerStrategies/PlayerStrategies.h
-        PlayerStrategies/PlayerStrategies.cpp
-        #    MainDriver.cpp
+        MainDriver.cpp
 
-
-
-)
+ "PlayerStrategies/PlayerStrategies.cpp" "PlayerStrategies/PlayerStrategies.h")

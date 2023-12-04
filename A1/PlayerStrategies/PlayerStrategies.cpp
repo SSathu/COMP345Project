@@ -468,10 +468,67 @@ vector<Territory*>* HumanPlayerStrategy::toDefend()
 	return list;
 }
 
+void AggressivePlayerStrategy::issueOrder()
+{
+	vector<Territory*>* defendingTerritories = toDefend();
+	vector<Territory*>* attackingTerritories = toAttack();
+
+	int armiesToDeploy = p->reinforcementPool / toDefend()->size();
+
+	for (Territory* t : *defendingTerritories)
+	{
+		DeployOrder* d = new DeployOrder(p, armiesToDeploy, t);
+		p->orderList->push_back(d);
+
+		for (Territory* h : *attackingTerritories)
+		{
+			AdvanceOrder* a = new AdvanceOrder(p, t, h, *t->numArmies);
+			p->orderList->push_back(a);
+		}
+
+	}
+
+	bool usedACard = false;
+
+
+	for (Card* card : *p->hand->handCards)
+	{
+		if (usedACard == false)
+		{
+			int getCardType = *card->getCardType();;
+			
+
+			switch (getCardType)
+			{
+			case 0:
+				Order * orderBeingMade = p->hand->play(card, p->deck);
+				BombOrder* bomborder = static_cast<BombOrder*>(orderBeingMade);
+				bomborder->attackedTerritory = *attackingTerritories->begin();
+				bomborder->issuingPlayer = p;
+				p->orderList->push_back(bomborder);
+				usedACard = true;
+				break;
+
+			default:
+				break;
+			}
+
+
+		}
+
+
+	}
+
+
+
+
+}
+
 vector<Territory*>* AggressivePlayerStrategy::toAttack()
 {
 	vector<Territory*>* list = new vector<Territory*>;
-	for (Territory* s : *p->territory) {
+	vector<Territory*>* defendingTerritories = toDefend();
+	for (Territory* s : *defendingTerritories) {
 		bool containsEnemyNeighbor = false;
 		for (int i = 0; i < s->neighbors->size(); i++)
 		{
@@ -487,6 +544,9 @@ vector<Territory*>* AggressivePlayerStrategy::toAttack()
 
 		}
 	}
+
+	
+
 	return list;
 }
 
@@ -510,13 +570,115 @@ vector<Territory*>* AggressivePlayerStrategy::toDefend()
 			list->push_back(s);
 		}
 	}
+
+	int numOfArmies = 0;
+
+	for (int i=0; i<list->size();i++)
+	{
+		if (numOfArmies < *list->at(i)->numArmies)
+		{
+			numOfArmies = *list->at(i)->numArmies;
+		}
+		else
+		{
+			list->erase(list->begin() + i);
+		}
+	}
 	return list;
+}
+
+void BenevolentPlayerStrategy::issueOrder()
+{
+	vector<Territory*>* defendingTerritories = toDefend();
+
+	int armiesToDeploy = p->reinforcementPool / toDefend()->size();
+
+	for (Territory* t : *defendingTerritories)
+	{
+		DeployOrder* d = new DeployOrder(p, armiesToDeploy, t);
+		p->orderList->push_back(d);
+	}
+
+	bool usedACard = false;
+
+
+	for (Card* card : *p->hand->handCards)
+	{
+		if (usedACard == false)
+		{
+			int getCardType = *card->getCardType();;
+
+
+			switch (getCardType)
+			{
+			case 1:
+				Order * orderBeingMade = p->hand->play(card, p->deck);
+				DeployOrder* deployOrder = static_cast<DeployOrder*>(orderBeingMade);
+				int armiesToDeploy = p->reinforcementPool / toDefend()->size();
+				deployOrder->area = defendingTerritories->front();
+				deployOrder->issuingPlayer = p;
+				deployOrder->numberOfArmies = armiesToDeploy;
+
+				p->orderList->push_back(deployOrder);
+				usedACard = true;
+				break;
+			case 2:
+				Order * orderBeingMade = p->hand->play(card, p->deck);
+				BlockadeOrder* blockadeOrder = static_cast<BlockadeOrder*>(orderBeingMade);
+				blockadeOrder->area = defendingTerritories->front();
+				blockadeOrder->issuingPlayer = p;
+
+				p->orderList->push_back(blockadeOrder);
+				usedACard = true;
+				break;
+			case 3:
+				Order * orderBeingMade = p->hand->play(card, p->deck);
+				AirliftOrder* airLiftOrder = static_cast<AirliftOrder*>(orderBeingMade);
+				airLiftOrder->issuingPlayer = p;
+				airLiftOrder->destination = defendingTerritories->front();
+
+				int numOfArmies = 0;
+				Territory* starting;
+				for (Territory* terr : *p->territory)
+				{
+					if (!(terr->getName() == defendingTerritories->front()->getName()) && *terr->numArmies > numOfArmies)
+					{
+						numOfArmies = *terr->numArmies;
+						starting = terr;
+					}
+				}
+				airLiftOrder->start = starting;
+				airLiftOrder->numberOfArmies = numOfArmies / 2;
+
+				p->orderList->push_back(airLiftOrder);
+				usedACard = true;
+				break;
+			case 4: 
+				Order * orderBeingMade = p->hand->play(card, p->deck);
+				NegotiateOrder* negotiateOrder = static_cast<NegotiateOrder*>(orderBeingMade);
+				negotiateOrder->issuingPlayer = p;
+				negotiateOrder->targetPlayer = toAttack()->front()->playerOwner;
+
+				p->orderList->push_back(blockadeOrder);
+				usedACard = true;
+				break;
+			default:
+				usedACard = true;
+				break;
+			}
+
+
+		}
+
+
+	}
 }
 
 vector<Territory*>* BenevolentPlayerStrategy::toAttack()
 {
 	vector<Territory*>* list = new vector<Territory*>;
-	for (Territory* s : *p->territory) {
+	vector<Territory*>* defendingTerritories = toDefend();
+	for (Territory* s : *defendingTerritories) {
 		bool containsEnemyNeighbor = false;
 		for (int i = 0; i < s->neighbors->size(); i++)
 		{
@@ -553,6 +715,20 @@ vector<Territory*>* BenevolentPlayerStrategy::toDefend()
 		if (containsEnemyNeighbor)
 		{
 			list->push_back(s);
+		}
+	}
+
+	int numOfArmies = 10000;
+
+	for (int i = 0; i < list->size(); i++)
+	{
+		if (numOfArmies > *list->at(i)->numArmies)
+		{
+			list->erase(list->begin() + i);
+		}
+		else
+		{
+			numOfArmies = *list->at(i)->numArmies;
 		}
 	}
 	return list;

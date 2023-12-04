@@ -14,6 +14,7 @@ Territory::Territory(string name, string cont, int x, int y) {
 	xCoord = new int(x);
 	yCoord = new int(y);
 	visited = new bool(false);
+	visited2 = new bool(false);
     numArmies = new int(0);
 	neighbors = new vector<Territory*>;
 }
@@ -26,6 +27,8 @@ Territory::Territory(Territory* copy) {
     visited = new bool(false);
     numArmies = new int(0);
 	neighbors = copy->neighbors;
+	visited2 = new bool(false);
+
 }
 
 //Territory get and set methods
@@ -87,6 +90,8 @@ Territory::~Territory() {
 	neighbors = nullptr;
     delete visited;
     visited = nullptr;
+	delete visited2;
+	visited2 = nullptr;
 }
 
 //Map constructors

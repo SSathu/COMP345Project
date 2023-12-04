@@ -6,18 +6,17 @@
 class PlayerStrategy {
 public:
 	Player* p;
-	bool neutral = false;
+	bool* neutral;
 	void setPlayer(Player* player) { this->p = player; };
 	virtual void issueOrder() = 0;
 	virtual vector<Territory*>* toAttack() = 0;
 	virtual vector<Territory*>* toDefend() = 0;
-	Territory* findClosestPathToDefend(Territory* start);
 };
 
 class NeutralPlayerStrategy : public PlayerStrategy {
 
 public:
-		NeutralPlayerStrategy() { neutral = true; }
+		NeutralPlayerStrategy() { *neutral = true; }
 		void issueOrder();
 		vector<Territory*>* toAttack();
 		vector<Territory*>* toDefend();

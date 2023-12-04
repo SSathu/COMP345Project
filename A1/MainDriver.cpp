@@ -1,6 +1,5 @@
 #include "Cards/Cards.h"
 #include "Map/Map.h"
-#include "Map/MapDriver.h"
 #include "Orders/Orders.h"
 #include "Player/Player.h"
 #include "GameEngine/GameEngine.h"
@@ -70,50 +69,7 @@ void testGameStates() {
         gameEngine.processInput(input);
     }
 }
-void MapDriver::testLoadMaps() {
-    MapLoader mapDriver = MapLoader();
 
-    string mapFile1 = "/Map/MapFiles/Texas.map";
-    string mapFile2 = "/Map/MapFiles/Roman Empire.map";
-
-    Map* mapTest1 = new Map();
-#pragma region Test1
-    bool test1 = mapDriver.createMapFromFile(mapFile1, mapTest1);
-    if (test1) {
-        cout << "Successful creation of a map from " << mapFile1 << endl;
-    }
-    else {
-        cout << "Unsuccessful creation of a map from " << mapFile1 << endl;
-    }
-    if (mapTest1->validate()) {
-        cout << "Map from " << mapFile1 << " is valid!" << endl;
-    }
-    else {
-        cout << "Map from " << mapFile1 << " is invalid!" << endl;
-    }
-    mapTest1->territories->clear();
-    delete mapTest1;
-#pragma endregion
-
-    Map* mapTest2 = new Map();
-#pragma region Test2
-    bool test2 = mapDriver.createMapFromFile(mapFile2, mapTest2);
-    if (test2) {
-        cout << "Successful creation of a map from " << mapFile2 << endl;
-    }
-    else {
-        cout << "Unsuccessful creation of a map from " << mapFile2 << endl;
-    }
-    if (mapTest2->validate()) {
-        cout << "Map from " << mapFile2 << " is valid!" << endl;
-    }
-    else {
-        cout << "Map from " << mapFile2 << " is invalid!" << endl;
-    }
-    mapTest2->territories->clear();
-    delete mapTest2;
-#pragma endregion
-}
 void testCards()
 {
     Card* card5 = new Card(5);
@@ -194,8 +150,43 @@ void testOrdersLists() {
     ordersList.orderList.clear();
 }
 
+void testMainGameLoop() {
+    // Create territories
+    Territory* territory = new Territory("Territory 1");
+    Territory* territory2 = new Territory("Territory 2");
+
+
+
+    std::vector<Territory*> territories = { territory, territory2 };
+    std::vector<Player*> players;
+
+    // Create players and territories
+    Player* player = new Player("Player 1", territory1);
+    Player* player2 = new Player("Player 2", territory2);
+
+
+    players.push_back(player);
+    players.push_back(player2);
+
+    // Create game engine
+    GameEngine gameEngine(players, territories);
+
+    // Run game loop
+    gameEngine.mainGameLoop();
+
+    // Clean up memory
+    for (Player* player : players) {
+        delete player;
+    }
+
+    for (Territory* territory : territories) {
+        delete territory;
+    }
+}
+
+
 int main() {
-//    testCards();
+// testCards();
 //    testGameStates();
 //    MapDriver::testLoadMaps();
 //    testOrdersLists();

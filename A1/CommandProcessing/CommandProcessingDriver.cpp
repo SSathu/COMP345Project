@@ -10,6 +10,6 @@ void testCommandProcessor() {
     delete gameEngine;
 }
 
-int main() {
+/*int main() {
     testCommandProcessor();
-}
+}*/

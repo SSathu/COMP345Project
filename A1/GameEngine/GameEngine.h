@@ -66,21 +66,21 @@ private:
 };
 
 class GameEngine : public Subject, ILoggable {
-    public:
-        GameEngine(); // Constructor
-        GameEngine(State* initialState); // Constructor
-        GameEngine(const GameEngine& other); // Copy constructor
-        GameEngine& operator=(const GameEngine& other); // Assignment operator
-        // Process the input and triggers the transition
-        void processInput(const std::string& input);
-        // Validates the input if it corresponds to a state's edge
-        bool validateInput(const std::string& input);
-        // Getter for currentState
-        State* getCurrentState();
-        static std::string stateToString(State state);
-        friend std::ostream& operator<<(std::ostream& os, const GameEngine& engine); // Stream insertion operator
+public:
+    GameEngine(); // Constructor
+    GameEngine(State* initialState); // Constructor
+    GameEngine(const GameEngine& other); // Copy constructor
+    GameEngine& operator=(const GameEngine& other); // Assignment operator
+    // Process the input and triggers the transition
+    void processInput(const std::string& input);
+    // Validates the input if it corresponds to a state's edge
+    bool validateInput(const std::string& input);
+    // Getter for currentState
+    State* getCurrentState();
+    static std::string stateToString(State state);
+    friend std::ostream& operator<<(std::ostream& os, const GameEngine& engine); // Stream insertion operator
 
-        void startupPhase();
+    void startupPhase();
 
         Map* gameEngineMap;
         vector<Player*>* players;
@@ -93,25 +93,32 @@ class GameEngine : public Subject, ILoggable {
         bool executeOrdersPhase();
         void mainGameLoop(GameEngine* game);
         void mainGameLoop(GameEngine* game, int turns);
+    Map* gameEngineMap;
+    vector<Player*>* players;
+    void reinforcementPhase();
+    void issueOrderPhase();
+    bool executeOrdersPhase();
+    void mainGameLoop(GameEngine* game);
+    void mainGameLoop(GameEngine* game, int turns);
 
-        string* stringToLog();
+    string* stringToLog();
 
-    private:
-        CommandProcessor* commandProcessor;
-        // Instance variable holding the game's current state
-        State* currentState;
-        // Represents the edges of a state
-        std::map<State, std::map<std::string, State>>* stateTransitions;
-        // Triggers the transition to 'state'
-        void transitionTo(State* state);
-        // Executes the command and returns its effect
-        string* executeCommand(Command* command);
+private:
+    CommandProcessor* commandProcessor;
+    // Instance variable holding the game's current state
+    State* currentState;
+    // Represents the edges of a state
+    std::map<State, std::map<std::string, State>>* stateTransitions;
+    // Triggers the transition to 'state'
+    void transitionTo(State* state);
+    // Executes the command and returns its effect
+    string* executeCommand(Command* command);
 
-        // Methods in startup phase
-        string* loadMap(string mapName);
-        string* validateMap();
-        string* addPlayer(string* playerName);
-        string* gameStart();
+    // Methods in startup phase
+    string* loadMap(string mapName);
+    string* validateMap();
+    string* addPlayer(string* playerName);
+    string* gameStart();
 
         // Tournament Variables
         TournamentController *tournamentController;
@@ -120,3 +127,4 @@ class GameEngine : public Subject, ILoggable {
         void createTournament(vector<string> inputTokens);
 
 };
+
