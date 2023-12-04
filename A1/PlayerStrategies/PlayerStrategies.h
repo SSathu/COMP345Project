@@ -6,7 +6,7 @@
 class PlayerStrategy {
 public:
 	Player* p;
-	bool* neutral = false;
+	bool* neutral;
 	void setPlayer(Player* player) { this->p = player; };
 	virtual void issueOrder() = 0;
 	virtual vector<Territory*>* toAttack() = 0;
