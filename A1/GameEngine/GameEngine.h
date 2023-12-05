@@ -38,27 +38,28 @@ class GameEngine;
 
 class TournamentController {
 public:
-    TournamentController(vector<Map*> maps, vector<string> playerStrategies, int gameCount, int turnCount, GameEngine* engine);
+    TournamentController(vector<string> maps, vector<string> playerStrategies, int gameCount, int turnCount, GameEngine* engine);
     TournamentController(const TournamentController& th); //copy constructor
     TournamentController& operator =(const TournamentController&); //assignment operator
     ~TournamentController(); //destructor
 
     friend ostream& operator << (ostream& out, const TournamentController& g);
 private:
-    vector<Map*> maps;
+    vector<string> maps;
     vector<string> playerStrategies;
-    int gameCount;
-    int turnCount;
+    int maxGameCount;
+    int maxTurnCount;
     vector<vector<string>> results;
     GameEngine* engine;
-    int currentMapIdx;
-    int currentGame;
+    int mapIndex;
+    int gameIndex;
 
-    void execute();
+    void processCurrentState();
     void loadMap(int);
-    void addPlayers();
-    bool canPlayTurn();
+    void loadPlayers();
+    bool canTurnBePlayed();
     void printResults();
+    void logResults();
 
 
     friend class GameEngine;
@@ -75,6 +76,8 @@ public:
     void processInput(const std::string& input);
     // Validates the input if it corresponds to a state's edge
     bool validateInput(const std::string& input);
+    // Triggers the transition to 'state'
+    void transitionTo(State* state);
     // Getter for currentState
     State* getCurrentState();
     static std::string stateToString(State state);
@@ -85,38 +88,41 @@ public:
     Map* gameEngineMap;
     vector<Player*>* players;
     int nbTurns;
-    bool isRunning;
+
+    // Methods in startup phase
+    string* loadMap(string mapName);
+    string* validateMap();
+    string* addPlayer(string* playerName);
+    string* addPlayer(string* playerName, PlayerStrategy* strategy);
+    string* gameStart();
 
     void reinforcementPhase();
     void issueOrderPhase();
     bool executeOrdersPhase();
-    void mainGameLoop(GameEngine* game);
-    void mainGameLoop(GameEngine* game, int turns);
+    void mainGameLoop();
+
+    void resetGame();
+    void startGame();
 
     string* stringToLog();
 
+    // Tournament Variables
+    TournamentController *tournamentController;
 private:
     CommandProcessor* commandProcessor;
     // Instance variable holding the game's current state
     State* currentState;
     // Represents the edges of a state
     std::map<State, std::map<std::string, State>>* stateTransitions;
-    // Triggers the transition to 'state'
-    void transitionTo(State* state);
     // Executes the command and returns its effect
     string* executeCommand(Command* command);
 
-    // Methods in startup phase
-    string* loadMap(string mapName);
-    string* validateMap();
-    string* addPlayer(string* playerName);
-    string* gameStart();
-
-    // Tournament Variables
-    TournamentController *tournamentController;
+    // Methods in main game loop
+    void checkForLosers();
+    void checkForWinner();
 
     // Tournament mode methods
-    void createTournament(vector<string> inputTokens);
+    bool createTournament(vector<string> inputTokens);
 
 };
 

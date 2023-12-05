@@ -64,6 +64,66 @@ bool CommandProcessor::validate(const string& commandString, GameEngine& gameEng
     return gameEngine.validateInput(commandString);
 }
 
+bool CommandProcessor::validateTournamentCommand(vector<std::string> &tournamentTokens) {
+    // This command lets the user choose the parameters of the tournament, i.e.: M = 1 to 5 different maps, P = 2 to 4
+    //different computer players strategies, G = 1 to 5 games to be played on each map, and D = 10 to 50 maximum
+    //number of turns for each game.
+
+
+    // tournament command is of template:
+    // tournament -M <listofmapfiles> -P <listofplayerstrategies> -G <numberofgames> -D <maxnumberofturns>
+
+    int index = 2;
+
+    // Check number of maps is between 1 and 5
+    int mapCount = 0;
+    while(tournamentTokens.at(index) != "-P") {
+        mapCount++;
+        index++;
+    }
+    if(mapCount < 1 || mapCount > 5){
+        cout << "Invalid number of maps (1-5)" << endl;
+        return false;
+    }
+
+    // Skip -P
+    index++;
+
+    // Check number of player strategy is between 2 and 4
+    int strategyCount = 0;
+    while(tournamentTokens.at(index) != "-G") {
+        strategyCount++;
+        index++;
+    }
+    if(strategyCount < 2 || strategyCount > 4) {
+        cout << "Invalid number of player strategies (2-4)" << endl;
+        return false;
+    }
+
+    // Skip -G
+    index++;
+
+    // Check number of games is between 1 and 5
+    int gameCount = stoi(tournamentTokens.at(index));
+
+    if(gameCount < 1 || gameCount > 5) {
+        cout << "Invalid number of games (1-5)" << endl;
+        return false;
+    }
+    // Skip -D
+    index++;
+    index++;
+
+    // Check number of turns is between 10 and 50
+    int turnCount = stoi(tournamentTokens.at(index));
+    if(turnCount < 10 || turnCount > 50){
+        cout << "Invalid number of turns (10-50)" << endl;
+        return false;
+    }
+
+    return true;
+}
+
 // COMMAND CLASS //
 // Constructors and destructors
 Command::Command() {
@@ -88,7 +148,7 @@ Command::~Command() {
 
 string* Command::stringToLog()
 {
-    return new string("Command effect does: " + *effect);
+    return new string(*effect);
 }
 
 // Methods

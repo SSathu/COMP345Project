@@ -42,7 +42,7 @@ public:
     string* stringToLog();
 
     static bool validate(const std::string& command, GameEngine& gameEngine);
-
+    bool validateTournamentCommand(vector<string>& tournamentTokens);
     // Getters
     std::vector<Command*>* getCommandsList();
     Command * getCommand(GameEngine& gameEngine);

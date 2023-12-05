@@ -15,7 +15,7 @@ void MapDriver::testLoadMaps() {
 	MapLoader mapDriver = MapLoader();
 
 	string mapFile1 = "../MapFiles/Texas.map";
-	string mapFile2 = "../MapFiles/Roman Empire.map";
+	string mapFile2 = "../MapFiles/Roman_Empire.map";
 
 	Map* mapTest1 = new Map();
 #pragma region Test1

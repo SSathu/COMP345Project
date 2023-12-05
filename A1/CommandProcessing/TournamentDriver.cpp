@@ -1,18 +1,14 @@
 //imports
-#include <iostream>
 #include "../GameEngine/GameEngine.h"
-#include <string>
-#include "../Utils/GameUtils.h"
-#include <random>
 
 void testTournament();
 
-
-
 void testTournament2() {
-    GameEngine gameEngine;
+    auto* gameEngine = new GameEngine();
+    auto* logObserver = new LogObserver();
 
-    gameEngine.startupPhase();
+    gameEngine->Attach(logObserver);
+    gameEngine->startupPhase();
 }
 
 //void testTournament() {
@@ -21,8 +17,8 @@ void testTournament2() {
 //    gameEngine.gameEngineMap = 0;
 //    int mapCount;
 //    int playerStrategyCount;
-//    int gameCount;
-//    int turnCount;
+//    int maxGameCount;
+//    int maxTurnCount;
 //
 //    //Get all the inputs
 //    string input = "";
@@ -44,8 +40,8 @@ void testTournament2() {
 //        //manage the int inputs
 //        mapCount = stoi(tokens[1].substr(2, 1));
 //
-//        gameCount = stoi(tokens[3].substr(2, 1));
-//        turnCount = stoi(tokens[4].substr(2));
+//        maxGameCount = stoi(tokens[3].substr(2, 1));
+//        maxTurnCount = stoi(tokens[4].substr(2));
 //
 //        //manage the players
 //        string playersInput = tokens[2].substr(2, tokens[2].length() - 3);
@@ -58,8 +54,8 @@ void testTournament2() {
 //        players = tempPlayers;
 //        playerStrategyCount = players.size();
 //
-//        if (mapCount < 1 || playerStrategyCount < 2 || gameCount < 1 || turnCount < 10
-//        || mapCount > 5 || playerStrategyCount > 4 || gameCount > 5 || turnCount > 50)
+//        if (mapCount < 1 || playerStrategyCount < 2 || maxGameCount < 1 || maxTurnCount < 10
+//        || mapCount > 5 || playerStrategyCount > 4 || maxGameCount > 5 || maxTurnCount > 50)
 //            continue;
 //        else
 //            break;
@@ -67,11 +63,11 @@ void testTournament2() {
 //    /*
 //     * Turn all inputs into commands (aka add players into system)
 //     */
-//    vector<string> gameResults(gameCount * mapCount);
+//    vector<string> gameResults(maxGameCount * mapCount);
 //
 //    //List of maps
 //    vector<string> maps = {"Texas.map",
-//                           "Roman Empire.map",
+//                           "Roman_Empire.map",
 //                           "Texas - 2.map",
 //                           "Roman Empire - 2.map",
 //                           "Texas - 3.map"};
@@ -82,7 +78,7 @@ void testTournament2() {
 //        gameEngine.loadMap(maps[i]);
 //        gameEngine.validateMap();
 //
-//        for (int j = 0; j < gameCount; ++j) {
+//        for (int j = 0; j < maxGameCount; ++j) {
 //
 //            //add all the players using commandProcessing
 //            for (int i = 0; i < playerStrategyCount; ++i) {
@@ -90,9 +86,7 @@ void testTournament2() {
 //                gameEngine.addPlayer(playerName);
 //            }
 //
-//
-//
-//            gameEngine.mainGameLoop(&gameEngine, turnCount);
+//            gameEngine.mainGameLoop(&gameEngine, maxTurnCount);
 //
 //            /*
 //             * TODO: you need to implement some way to catalog the result of the game into gameResults[]
@@ -121,24 +115,24 @@ void testTournament2() {
 //    }
 //    cout << endl;
 //    //print the other 2
-//    cout << "G: " << gameCount << endl;
-//    cout << "D: " << turnCount << endl;
+//    cout << "G: " << maxGameCount << endl;
+//    cout << "D: " << maxTurnCount << endl;
 //
 //    //print out the table of victories
 //    cout << "|          |";
-//    for (int i = 1; i <= gameCount; ++i) {
+//    for (int i = 1; i <= maxGameCount; ++i) {
 //        cout << "Game " + to_string(i) + "    |";
 //    }
 //    for (int i = 0; i < mapCount; ++i) {
 //        cout << endl;
 //        cout << "------------";
-//        for (int j = 0; j < gameCount; ++j) {
+//        for (int j = 0; j < maxGameCount; ++j) {
 //            cout << "-----------";
 //        }
 //        cout << endl;
 //        cout << "|Map " + to_string(i) + "     |";
-//        for (int j = 0; j < gameCount; ++j) {
-//            cout << gameResults[j + gameCount * i] + "|";
+//        for (int j = 0; j < maxGameCount; ++j) {
+//            cout << gameResults[j + maxGameCount * i] + "|";
 //        }
 //    }
 //}
