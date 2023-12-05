@@ -5,212 +5,7 @@
 #include "../Utils/GameUtils.h"
 #include <chrono>
 #include <random>
-#include <iomanip>
-
 using namespace std;
-
-TournamentController::TournamentController(vector<string> maps, vector<std::string> playerStrategies, int gameCount,
-                                           int turnCount, GameEngine *engine) {
-    this->maps = maps;
-    this->playerStrategies = playerStrategies;
-    // Initialize results
-    results.emplace_back();
-    this->maxGameCount = gameCount;
-    this->maxTurnCount = turnCount;
-    this->engine = engine;
-}
-
-TournamentController::TournamentController(const TournamentController &th) {
-    this->maps = th.maps;
-    this->playerStrategies = th.playerStrategies;
-    this->maxGameCount = th.maxGameCount;
-    this->maxTurnCount = th.maxTurnCount;
-    this->engine = th.engine;
-    this->results = th.results;
-}
-
-TournamentController &TournamentController::operator=(const TournamentController &th) {
-    if (this == &th) {
-        return *this;
-    }
-    this->maps = th.maps;
-    this->playerStrategies = th.playerStrategies;
-    this->maxGameCount = th.maxGameCount;
-    this->maxTurnCount = th.maxTurnCount;
-    this->engine = th.engine;
-    return *this;
-}
-
-TournamentController::~TournamentController() {
-    delete engine;
-}
-
-// TournamentController methods
-ostream &operator<<(ostream &out, const TournamentController &g) {
-    out << "TournamentController: " << endl;
-    // Print size of maps
-    out << "Map Count: " << g.maps.size() << endl;
-
-    out << "Player Strategies: " << endl;
-    for (auto & playerStrategy : g.playerStrategies) {
-        out << playerStrategy << endl;
-    }
-
-    out << "Game Count: " << g.maxGameCount << endl;
-    out << "Turn Count: " << g.maxTurnCount << endl;
-    return out;
-}
-
-
-
-bool TournamentController::canTurnBePlayed() {
-    cout << "turn: " << engine->nbTurns << endl;
-    if(engine->nbTurns < this->maxTurnCount){
-        return true;
-    }else{
-        cout << "Max number of turns reached. Game: (" << this->gameIndex << ") finished in a draw." << endl;
-        results[this->mapIndex].emplace_back("Draw");
-        engine->transitionTo(new State(State::WIN));
-        return false;
-    }
-}
-
-void TournamentController::printResults() {
-    std::ostringstream output;
-    output << endl;
-
-    output << "Tournament mode:" << endl;
-    output << "M: ";
-    // for loop through maps => M: <Map1>, <Map2>, <Map3> (remove last comma)
-    for (size_t i = 0; i < maps.size(); ++i) {
-        output << maps[i];
-        if (i < maps.size() - 1) {
-            output << ", ";
-        }
-    }
-    output << endl << "P: ";
-    // for loop through playerStrategies => P: <Player1>, <Player2>, <Player3> (remove last comma)
-    for (size_t i = 0; i < playerStrategies.size(); ++i) {
-        output << playerStrategies[i];
-        if (i < playerStrategies.size() - 1) {
-            output << ", ";
-        }
-    }
-
-    output << endl << "G: " << maxGameCount << endl;
-    output << "D: " << maxTurnCount << endl << endl << endl;
-
-    output << "Results:" << endl;
-    // rows and columns
-    size_t numRows = maps.size() + 1;
-    size_t numCols = static_cast<size_t>(maxGameCount) + 1;
-
-    const int cellWidth = 10;
-
-    for (size_t i = 0; i < numRows; ++i) {
-        for (size_t j = 0; j < numCols; ++j) {
-            if (i == 0 && j == 0) {
-                output << std::setw(cellWidth - 1) << " ";
-            } else if (i == 0) {
-                output << std::setw(cellWidth - 3) << "Game " << j;
-            } else if (j == 0) {
-                output << std::setw(cellWidth - 2) << "Map " << i;
-            } else {
-                output << std::setw(cellWidth - 2) << results[i - 1][j - 1];
-            }
-
-            // Print vertical divider except
-            if (j < numCols - 1) {
-                output << " | ";
-            }
-        }
-
-        output << std::endl;
-
-        // Print horizontal divider
-        if (i < numRows - 1) {
-            for (size_t j = 0; j < numCols; ++j) {
-                output << std::string(cellWidth, '-') << "+";
-            }
-            output << std::endl;
-        }
-    }
-
-    Command command = Command();
-    auto* log = new LogObserver();
-    command.Attach(log);
-    command.saveEffect(new string(output.str()));
-
-    // Print the table to the console
-    std::cout << output.str();
-
-}
-
-void TournamentController::processCurrentState() {
-    switch(*(engine->getCurrentState())){
-        case State::START:
-            loadMap(mapIndex);
-            engine->validateMap();
-            loadPlayers();
-            engine->startGame();
-            break;
-        case State::WIN:
-            if(engine->players->size() == 1){
-                results[this->mapIndex].push_back(engine->players->at(0)->getName());
-            }
-            gameIndex++;
-            if(gameIndex == maxGameCount){
-                mapIndex++;
-                gameIndex = 0;
-
-                if(mapIndex == maps.size()){
-                    cout << "Tournament finished!" << endl;
-                    cout << "Printing results..." << endl;
-                    printResults();
-
-                    engine->tournamentController = nullptr;
-                    delete this;
-                    return;
-                }
-                results.emplace_back();
-            }
-            engine->transitionTo(new State(State::START));
-            engine->resetGame();
-            loadMap(mapIndex);
-            engine->validateMap();
-            loadPlayers();
-            engine->startGame();
-            break;
-        default:
-            break;
-    }
-}
-
-void TournamentController::loadMap(int index) {
-    cout << "Loading map file: " << maps[index] << " ..." << endl;
-    engine->loadMap(maps[index]);
-}
-
-void TournamentController::loadPlayers() {
-    cout << "Adding players..." << endl;
-    for (auto& playerStrategy : playerStrategies) {
-        if("Aggressive") {
-            engine->addPlayer(new string(playerStrategy), new AggressivePlayerStrategy());
-        }
-        else if("Benevolent") {
-            engine->addPlayer(new string(playerStrategy), new BenevolentPlayerStrategy());
-        }
-        else if("Neutral") {
-            engine->addPlayer(new string(playerStrategy), new NeutralPlayerStrategy());
-        }
-        else if("Cheater") {
-            engine->addPlayer(new string(playerStrategy), new CheaterPlayerStrategy());
-        }
-        else if("Human") {
-            engine->addPlayer(new string(playerStrategy), new HumanPlayerStrategy());
-        }
-    }
-}
 
 // Function to initialize the stateTransition map
 void initializeStateTransition(std::map<State, std::map<std::string, State>>* stateTransitions) {
@@ -236,14 +31,12 @@ GameEngine::GameEngine() : currentState(new State(State::START)) {
     // Initialize stateTransitions
     stateTransitions = new std::map<State, std::map<std::string, State>>();
     players = new vector<Player*>();
-    nbTurns = 0;
     initializeStateTransition(stateTransitions);
 }
 
 GameEngine::GameEngine(State* initialState) : currentState(initialState) {
     stateTransitions = new std::map<State, std::map<std::string, State>>();
     players = new vector<Player*>();
-    nbTurns = 0;
     initializeStateTransition(stateTransitions);
 }
 
@@ -265,7 +58,6 @@ GameEngine& GameEngine::operator=(const GameEngine& other) {
     // Assigning variables
     currentState = other.currentState;
     stateTransitions = other.stateTransitions;
-    nbTurns = other.nbTurns;
     return *this;
 }
 
@@ -310,13 +102,13 @@ std::ostream& operator<<(std::ostream& os, const GameEngine& engine) {
     return os;
 }
 
+
 // Startup Phase methods implementation
 void GameEngine::startupPhase() {
     cout << "Startup Phase..." << endl << endl;
 
     cout << "write '-console' to read from console" << endl;
     cout << "write '-file <filename>' to read from file" << endl;
-    cout << "write '-tournament -M <listofmapfiles> -P <listofplayerstrategies> -G <numberofgames> -D <maxnumberofturns>' to start a tournament" << endl;
 
     string input;
     cout << "Enter command:";
@@ -335,26 +127,13 @@ void GameEngine::startupPhase() {
         // Downcast commandProcessor to FileCommandProcessorAdapter to call readLineFromFile
         auto* fileCommandProcessor = dynamic_cast<FileCommandProcessorAdapter*>(commandProcessor);
         fileCommandProcessor->getFileLineReader()->readLineFromFile(inputTokens.at(1));
-        if(fileCommandProcessor->getFileLineReader()->getLines()->empty()) startupPhase();
-    }
-    else if(firstArgument == "-tournament"){
-        commandProcessor = new CommandProcessor();
-        if(commandProcessor->validateTournamentCommand(inputTokens)){
-            // Check if the tournament has been created successfully
-            if(!createTournament(inputTokens))
-                startupPhase();
-            this->tournamentController->processCurrentState();
-            return;
-        }
-        else{
-            cout << "Invalid tournament command. Please try again." << endl;
-            startupPhase();
-        }
+        if (fileCommandProcessor->getFileLineReader()->getLines()->empty()) startupPhase();
     }
     else {
         cout << "Invalid command. Please try again." << endl;
         startupPhase();
     }
+
     // While the currentState is not ASSIGN_REINFORCEMENTS
     while (*currentState != State::ASSIGN_REINFORCEMENTS) {
         Command* command = commandProcessor->getCommand(*this);
@@ -365,62 +144,6 @@ void GameEngine::startupPhase() {
     // Print all commands
     cout << endl << "Printing entered commands..." << endl;
     cout << *commandProcessor;
-
-    // Switch to play phase
-    startGame();
-}
-
-bool GameEngine::createTournament(vector<string> inputTokens) {
-    int maxTokens = inputTokens.size();
-    // Index = 1 since we have already processed -tournament and skip -M
-    int index = 2;
-
-    // tournament -M <listofmapfiles> -P <listofplayerstrategies> -G <numberofgames> -D <maxnumberofturns>
-    // -M <listofmapfiles>
-    vector<string> mapFiles;
-    MapLoader mapDriver = MapLoader();
-    while (index < maxTokens && inputTokens.at(index) != "-P") {
-        Map* map = new Map();
-        bool isMapCreated = mapDriver.createMapFromFile(inputTokens.at(index), map);
-        if(isMapCreated && map->validate()){
-            mapFiles.push_back(inputTokens.at(index));
-        }
-        else{
-            cout << "Map " << inputTokens.at(index) << " is invalid." << endl;
-            return false;
-        }
-        index++;
-    }
-
-    // skip -P
-    index++;
-
-    // -P <listofplayerstrategies>
-    vector<string> playerStrategies;
-    while (index < maxTokens && inputTokens.at(index) != "-G") {
-        playerStrategies.push_back(inputTokens.at(index));
-        index++;
-    }
-
-    // skip -G
-    index++;
-
-    // -G <numberofgames>
-    int gameCount = stoi(inputTokens.at(index));
-
-    // skip -D
-    index++;
-    index++;
-
-    int turnCount = stoi(inputTokens.at(index));
-
-    auto* controller = new TournamentController(mapFiles, playerStrategies, gameCount, turnCount, this);
-    this->tournamentController = controller;
-
-    cout << *controller << endl;
-
-    return true;
-
 }
 
 string* GameEngine::executeCommand(Command* command) {
@@ -443,10 +166,12 @@ string* GameEngine::executeCommand(Command* command) {
         }
 
         return effect;
-    } catch (const std::out_of_range& e) {
+    }
+    catch (const std::out_of_range& e) {
         // Handle out-of-range exception (e.g., insufficient arguments)
         return new string("Caught Error: Command has insufficient arguments.");
-    } catch (const std::exception& e) {
+    }
+    catch (const std::exception& e) {
         // Handle other exceptions
         return new string("Caught Error: " + string(e.what()));
     }
@@ -499,7 +224,7 @@ string* GameEngine::addPlayer(std::string* playerName) {
     return effect;
 }
 
-string* GameEngine::addPlayer(std::string *playerName, PlayerStrategy *strategy) {
+string* GameEngine::addPlayer(std::string* playerName, PlayerStrategy* ps) {
     string* effect;
     cout << "Current Players: " << players->size() << endl;
 
@@ -512,7 +237,7 @@ string* GameEngine::addPlayer(std::string *playerName, PlayerStrategy *strategy)
     // Create and add player
     auto* player = new Player();
     player->setName(*playerName);
-    player->setStrategy(strategy);
+    player->setStrategy(ps);
     players->push_back(player);
 
     // Effect
@@ -545,7 +270,6 @@ string* GameEngine::validateMap() {
 }
 
 string* GameEngine::gameStart() {
-    // 1) distribute territories to players
     string* effect;
     if (players->size() < 2) {
         cout << "Not enough players to start the game (Min: 2)." << endl;
@@ -554,9 +278,11 @@ string* GameEngine::gameStart() {
     }
     for (int i = 0; i < gameEngineMap->territories->size() - (gameEngineMap->territories->size() % players->size()); ++i) {
         (*players)[(i / (gameEngineMap->territories->size() / players->size()))]->territory->push_back(gameEngineMap->territories->at(i));
+        gameEngineMap->territories->at(i)->playerOwner = (*players)[(i / (gameEngineMap->territories->size() / players->size()))];
     }
     for (int i = 0; i < (gameEngineMap->territories->size() % players->size()); ++i) {
         (*players)[i]->territory->push_back(gameEngineMap->territories->at((gameEngineMap->territories->size() - (gameEngineMap->territories->size() % players->size())) + i));
+        gameEngineMap->territories->at((gameEngineMap->territories->size() - (gameEngineMap->territories->size() % players->size())) + i)->playerOwner = (*players)[i];
     }
     cout << endl;
 
@@ -617,7 +343,7 @@ string* GameEngine::gameStart() {
         deck->draw((*players)[i]->hand);
         deck->draw((*players)[i]->hand);
         cout << "Cards in " << (*players)[i]->getName() << "'s Hand: \n";
-        cout << (*players)[i]->hand;
+        cout << *(*players)[i]->hand;
     }
     cout << endl;
 
@@ -626,28 +352,6 @@ string* GameEngine::gameStart() {
     processInput("gamestart");
 
     return effect;
-}
-
-void GameEngine::startGame() {
-    gameStart();
-    cout << "Starting game..." << endl;
-    cout << "Current State: " << stateToString(*currentState) << endl;
-    mainGameLoop();
-}
-
-void GameEngine::resetGame() {
-    // Clear map
-    delete gameEngineMap;
-    gameEngineMap = nullptr;
-
-    // Clear players
-    for (auto& player : *players) {
-        delete player;
-    }
-    players->clear();
-
-    // Reset turn counter
-    nbTurns = 0;
 }
 
 void GameEngine::reinforcementPhase() {
@@ -668,8 +372,8 @@ void GameEngine::reinforcementPhase() {
 
         int currentReinforcementPool = player->getReinforcementPool();
         player->setReinforcementPool(currentReinforcementPool + reinforecement);
+
     }
-    processInput("issueorder");
 }
 
 void GameEngine::issueOrderPhase() {
@@ -679,28 +383,27 @@ void GameEngine::issueOrderPhase() {
         Player* currentPlayer = (*players)[index];
 
 
-        if (!currentPlayer->orderList->empty()) {
+        if ((currentPlayer->orderList->empty())) {
             currentPlayer->issueOrder();
         }
         // Move to the next player in a round-robin fashion
         index = (index + 1) % players->size();
     }
-    processInput("endissueorders");
+
 }
 
 bool GameEngine::executeOrdersPhase() {
     // Execute other orders in a round-robin fashion
     bool continueGame = true;
     while (continueGame) {
+
         for (Player* player : *players) {
-            if (!player->orderList->empty()) {
+            while (!player->orderList->empty()) {
                 player->executeTopOrder();
                 continueGame = true;
             }
-            else {
-                continueGame = false;
-            }
         }
+        continueGame = false;
     }
 
     // Check for player elimination and game termination
@@ -713,61 +416,43 @@ bool GameEngine::executeOrdersPhase() {
         }
         else ++iterator;
     }
-
-    processInput("endexecorders");
-
+    //TODO: change return variable or change the return type of the function
     return true;
 }
 
-void GameEngine::mainGameLoop() {
-    bool restart = false;
-    while (currentState != new State(State::WIN)) {
-        if (tournamentController && !tournamentController->canTurnBePlayed()){
-            restart = true;
-            break;
+void GameEngine::mainGameLoop(GameEngine* game) {
+    while (true) {
+        if (game->players->size() > 1) {
+            reinforcementPhase();
+            issueOrderPhase();
+            executeOrdersPhase();
         }
-        nbTurns++;
-        switch(*currentState) {
-            case State::ASSIGN_REINFORCEMENTS:
-                reinforcementPhase();
-                break;
-            case State::ISSUE_ORDERS:
-                issueOrderPhase();
-                break;
-            case State::EXECUTE_ORDERS:
-                executeOrdersPhase();
-                break;
-            default:
-                break;
-        }
-        checkForLosers();
-        checkForWinner();
-    }
-    if(restart)
-        this->tournamentController->processCurrentState();
-}
-
-void GameEngine::checkForLosers() {
-    for (auto& player : *players) {
-        if (player->territory->empty()) {
-            cout << "Player " << player->getName() << " has been eliminated from the game." << endl;
-            // Remove player from vector
-            players->erase(std::remove(players->begin(), players->end(), player), players->end());
-            delete player;
-        }
+        else break;
     }
 }
+//TODO: edit the main game loop to do something AFTER the for loop ends, finding some way to decide a winner
+void GameEngine::mainGameLoop(GameEngine* game, int turns) {
+    for (int i = 0; i < turns; ++i) {
+        if (game->players->size() > 1) {
+            reinforcementPhase();
+            issueOrderPhase();
+            executeOrdersPhase();
+        }
+        else break;
+    }
 
-void GameEngine::checkForWinner() {
-    if(players->size() != 1)
-        return;
+    int WinningplayerTerritorySize;
+    Player* winningPlayer;
+    for (Player* player : *game->players)
+    {
+        int playerTerritorySize = player->territory->size();
+        if (playerTerritorySize > WinningplayerTerritorySize)
+        {
+            winningPlayer = player;
+            WinningplayerTerritorySize = playerTerritorySize;
+        }
+    }
 
-    Player* last = (*players)[0];
+    std::cout << winningPlayer->name << " has won! With a territory size of " << WinningplayerTerritorySize;
 
-    // last player must own all territories
-    if(last->territory->size() != gameEngineMap->territories->size())
-        return;
-
-    cout << "Player " << last->getName() << " has won the game!" << endl;
-    this->transitionTo(new State(State::WIN));
 }

@@ -112,7 +112,7 @@ vector<Territory*>* CheaterPlayerStrategy::toAttack()
 				}
 				if (!alreadyInList)
 				{
-					list->push_back(s);
+					list->push_back(def);
 				}
 			}
 
@@ -161,6 +161,7 @@ void HumanPlayerStrategy::issueOrder()
 		}
 		reinforcementPool = reinforcementPool - value2;
 		p->orderList->push_back(new DeployOrder(p, value2, toDefend->at(value)));
+		p->orderList->back()->execute();
 	}
 	
 	
@@ -481,7 +482,7 @@ vector<Territory*>* HumanPlayerStrategy::toAttack()
 				}
 				if (!alreadyInList)
 				{
-					list->push_back(s);
+					list->push_back(def);
 				}
 			}
 
@@ -513,7 +514,7 @@ vector<Territory*>* HumanPlayerStrategy::toDefend()
 				}
 				if (!alreadyInList)
 				{
-					list->push_back(def);
+					list->push_back(s);
 				}
 			}
 
@@ -534,6 +535,7 @@ void AggressivePlayerStrategy::issueOrder()
 	{
 		DeployOrder* d = new DeployOrder(p, armiesToDeploy, t);
 		p->orderList->push_back(d);
+		p->orderList->back()->execute();
 
 		for (Territory* h : *attackingTerritories)
 		{
@@ -730,9 +732,16 @@ void BenevolentPlayerStrategy::issueOrder()
 				{
 					if (!(terr->getName() == defendingTerritories->front()->getName()) && *terr->numArmies > numOfArmies)
 					{
-						numOfArmies = *terr->numArmies;
 						starting = terr;
+						numOfArmies = *terr->numArmies;
+						
 					}
+				}
+				if (numOfArmies == 0)
+				{
+					usedACard = true;
+
+					break;
 				}
 				airLiftOrder->start = starting;
 				airLiftOrder->numberOfArmies = numOfArmies / 2;
@@ -748,6 +757,11 @@ void BenevolentPlayerStrategy::issueOrder()
 				NegotiateOrder* negotiateOrder;
 				negotiateOrder = static_cast<NegotiateOrder*>(orderBeingMade);
 				negotiateOrder->issuingPlayer = p;
+				if (toAttack()->empty())
+				{
+					usedACard = true;
+					break;
+				}
 				negotiateOrder->targetPlayer = toAttack()->front()->playerOwner;
 
 
