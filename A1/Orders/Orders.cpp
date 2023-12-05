@@ -27,7 +27,7 @@ void Order::switchNeutralPlayer(Player* p)
     if ((p) &&*p->ps->neutral == true)
     {
         *p->ps->neutral = false;
-        p->ps = new AggressivePlayerStrategy();
+        p->setStrategy(new AggressivePlayerStrategy);
     }
 }
 
@@ -59,6 +59,7 @@ void DeployOrder::execute() {
     
     if(this->validate()){
         Order::execute();
+        issuingPlayer->reinforcementPool -= numberOfArmies;
         this->area->numArmies += numberOfArmies;
     }
 }
@@ -106,6 +107,7 @@ void AdvanceOrder::execute() {
                 playerBeingAttacked->territory->erase(it);
             }
         }
+        attacking->playerOwner = p;
         p->territory->push_back(attacking);
         return;
     }
@@ -140,7 +142,22 @@ void AdvanceOrder::execute() {
         destination->playerOwner->reinforcementPool -= *(destination->numArmies);
         *(destination->numArmies) = remainingAttackers;
         destination->setPlayer(issuingPlayer);
-        
+        destination->playerOwner = issuingPlayer;
+
+        Territory* attacking = this->destination;
+
+        if (!attacking->playerOwner == NULL)
+        {
+            Player* playerBeingAttacked = attacking->playerOwner;
+            auto it = std::find(playerBeingAttacked->territory->begin(), playerBeingAttacked->territory->end(), attacking);
+
+            if (it != playerBeingAttacked->territory->end())
+            {
+                playerBeingAttacked->territory->erase(it);
+            }
+        }
+
+        issuingPlayer->territory->push_back(destination);
         int randCardNumb = std::rand()%5;
         Card newCard(randCardNumb);
         issuingPlayer->hand->handCards->push_back(&newCard);
